@@ -511,66 +511,21 @@
         <image name="downarrow.png" width="34" height="62"/>
         <image name="kryptxtpanel.png" width="260" height="202"/>
         <image name="leather-back8.png" width="768" height="1027"/>
-        <image name="leftribbon.png" width="45" height="50"/>
-        <image name="mainribbon.png" width="262" height="50"/>
+        <image name="leftribbon.png" width="16" height="16"/>
+        <image name="mainribbon.png" width="16" height="16"/>
         <image name="profiles2.png" width="44" height="44"/>
-        <image name="rightribbon.png" width="46" height="50"/>
+        <image name="rightribbon.png" width="16" height="16"/>
         <image name="send.png" width="44" height="44"/>
         <image name="uparrow.png" width="34" height="62"/>
     </resources>
-    <classes>
-        <class className="OTBEditProfilesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBEditProfilesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="closeFirstPicker:"/>
-                <relationship kind="action" name="showActionSheet:"/>
-                <relationship kind="action" name="showPicker:"/>
-                <relationship kind="outlet" name="contactCode" candidateClass="UIView"/>
-                <relationship kind="outlet" name="contactCode1" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode2" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode3" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode4" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode5" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode6" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode7" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactCode8" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="contactEmail" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="contactName" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="contactNumber" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="containerPanel" candidateClass="UIView"/>
-                <relationship kind="outlet" name="mainView" candidateClass="UIView"/>
-                <relationship kind="outlet" name="profileName" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="OTBMainViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBMainViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="infoOpen:"/>
-                <relationship kind="action" name="showActionSheet:"/>
-                <relationship kind="outlet" name="currentProfile" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="downArrow" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="infoButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="inputPanel" candidateClass="UIView"/>
-                <relationship kind="outlet" name="inputView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="outputButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="outputPanel" candidateClass="UIView"/>
-                <relationship kind="outlet" name="outputView" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="tempCode" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="upArrow" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="OTBProfilesViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBProfilesViewController.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="LX6-Dj-TDp"/>
-        <segue reference="UGe-TF-UmU"/>
+        <segue reference="bvG-Ys-OAY"/>
+        <segue reference="gdM-di-o9X"/>
         <segue reference="lJx-Bq-Wvx"/>
     </inferredMetricsTieBreakers>
 </document>
