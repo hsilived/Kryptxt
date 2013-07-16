@@ -13,30 +13,32 @@
 
 @implementation OTBEditProfilesViewController
 
-@synthesize profiles = _profiles, kbHelper;
+@synthesize profiles = _profiles;
 
 - (void)viewDidLoad {
 
     [super viewDidLoad];
-// Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view, typically from a nib.
 
-    UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(cancelButton)];
-    self.navigationItem.leftBarButtonItem = item;
+    generalHelpers = [[GeneralHelpers alloc] init];
+    validationMethods = [[ValidationMethods alloc] init];
+    kbHelper = [[KeyboardHelper alloc] initWithViewController:self onDoneSelector:@selector(onDone)];
+    peoplePicker = [[PeoplePicker alloc] initWithViewController:self onDoneSelector:@selector(onDonePicking)];
 
+    [generalHelpers createBackgroundLayerWithView:containerPanel BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:106/255.0 green:127/255.0 blue:147/255.0 alpha:(1.0)]];
+
+    [generalHelpers addDesignToView:profileName BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
+    [generalHelpers addDesignToView:contactName BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
+    [generalHelpers addDesignToView:contactNumber BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
+    [generalHelpers addDesignToView:contactEmail BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
+    
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStyleBordered target:self action:@selector(cancelButton)];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Save" style:UIBarButtonItemStyleBordered target:self action:@selector(saveButton)];
-
-    self.validationMethods = [[ValidationMethods alloc] init];
-
-    self.kbHelper = [[KeyboardHelper alloc] initWithViewController:self onDoneSelector:@selector(onDone)];
-
-    self.peoplePicker = [[PeoplePicker alloc] initWithViewController:self onDoneSelector:@selector(onDonePicking)];
-
-    [self createBackgroundLayerWithView:containerPanel];
-
-// In your viewDidLoad or wherever you initialize the view.
+    
     _pickerDisplayView = [[UIView alloc] initWithFrame:CGRectMake(0, 500, 320, 320)];
     [self.view insertSubview:_pickerDisplayView atIndex:100];
-//[self performSelector:@selector(animateIn) withObject:nil afterDelay:0.25];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -50,6 +52,7 @@
         self.title = @"Edit Profile";
 
         profileName.text = _profileDoc.data.title;
+        characterCountLabel.text = [NSString stringWithFormat:@"%i", profileName.text.length];
         profileCode = _profileDoc.data.profileCode;
 
         contactName.text = _profileDoc.data.contactName;
@@ -57,9 +60,11 @@
         contactEmail.text = _profileDoc.data.contactEmail;
 
         if ([profileCode isEqualToString:@"0"]) {
+            
             NSUInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
 
             for (int i = 0; i < numComponents; i++) {
+                
                 UILabel *_contactCode = (UILabel *) [self.view viewWithTag:i + 100];
                 _contactCode.text = [NSString stringWithFormat:@"%@", [profileCode substringWithRange:NSMakeRange(i, 1)]];
                 [code appendFormat:@"%@", [profileCode substringWithRange:NSMakeRange(i, 1)]];
@@ -70,27 +75,38 @@
     }
 
     [super viewWillAppear:animated];
+    
+    [kbHelper enable];
+    
+    kbHelper.textFieldDelegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
 
-    [self.kbHelper disable];
+    [kbHelper disable];
 }
 
-#pragma mark - Background Layer
+#pragma mark - Text Field Methods
 
-- (void)createBackgroundLayerWithView:(UIView *)view {
-
-    view.layer.borderColor = [[UIColor colorWithRed:128 / 255.0 green:0 / 255.0 blue:128 / 255.0 alpha:(1.0)] CGColor];
-    view.layer.backgroundColor = [[UIColor colorWithRed:230 / 255.0 green:230 / 255.0 blue:230 / 255.0 alpha:(1.0)] CGColor];
-    view.layer.borderWidth = 2;
-    view.layer.cornerRadius = 20;
-
-    view.layer.shadowRadius = 5;
-    view.layer.shadowOffset = CGSizeMake(0, 10);
-    view.layer.shadowColor = [[UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:50 / 255.0 alpha:(0.9)] CGColor];
-    view.layer.masksToBounds = NO;
-    view.layer.shadowOpacity = 0.6;
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    
+    if (textField.tag == 666) {
+        
+        int textLength = textField.text.length;
+        //NSString *currentText = textField.text;
+        
+        if (textLength + string.length > 18 && range.length == 0) {
+            
+            // don't allow change
+            return NO;
+        }
+        if (string.length > 0)
+            characterCountLabel.text = [NSString stringWithFormat:@"%i", textLength + string.length];
+        else
+            characterCountLabel.text = [NSString stringWithFormat:@"%i", textLength - 1];
+    }
+    
+    return YES;
 }
 
 - (IBAction)showActionSheet:(id)sender {
@@ -130,6 +146,7 @@
     codeGen.delegate = self;
 
     for (int i = 0; i < 8; i++) {
+        
         int number = [[profileCode substringWithRange:NSMakeRange(i, 1)] intValue];
 
         [codeGen selectRow:number inComponent:i animated:YES];
@@ -243,9 +260,9 @@
 
 - (void)onDonePicking {
 
-    contactNumber.text = _peoplePicker.contactNumber;
-    contactName.text = _peoplePicker.contactName;
-    contactEmail.text = _peoplePicker.contactEmail;
+    contactNumber.text = peoplePicker.contactNumber;
+    contactName.text = peoplePicker.contactName;
+    contactEmail.text = peoplePicker.contactEmail;
 
     [self.view endEditing:YES];
 }
@@ -275,7 +292,7 @@
 
 - (IBAction)showPicker:(id)sender {
 
-    [self.peoplePicker showPicker];
+    [peoplePicker showPicker];
 }
 
 - (void)randomize {
@@ -295,12 +312,13 @@
 
     [self.navigationController popViewControllerAnimated:YES];
     [self.navigationController dismissModalViewControllerAnimated:YES];
-    [[self parentViewController] dismissModalViewControllerAnimated:YES];}
+    [[self parentViewController] dismissModalViewControllerAnimated:YES];
+}
 
 - (void)saveButton {
 
     if (profileName.text.length == 0) {
-        [_validationMethods validationPopupForObject:profileName withContent:@"Profile needs a name." withView:self.view];
+        [validationMethods validationPopupForObject:profileName withContent:@"Profile needs a name." withView:self.view];
         return;
     }
 
@@ -308,6 +326,7 @@
     DLog(@"%@", profileName.text.lowercaseString);
 
     if ((self.profileDoc == nil) || (![self.profileDoc.data.title.lowercaseString isEqualToString:profileName.text.lowercaseString])) {
+         
         for (int i = 0; i < _profiles.count; i++) {
             
             ProfileDoc *temp = [_profiles objectAtIndex:i];
@@ -320,24 +339,27 @@
 
             if ([tempProfileName isEqualToString:_profileName]) {
                 
-                [_validationMethods validationPopupForObject:_profileName withContent:@"Profile name is already used." withView:self.view];
+                [validationMethods validationPopupForObject:_profileName withContent:@"Profile name is already used." withView:self.view];
                 return;
             }
         }
     }
 
     if (profileCode == NULL || [profileCode isEqualToString:@"????????"] || [profileCode isEqualToString:@"0"] || [profileCode isEqualToString:@""]) {
-        [_validationMethods validationPopupForObject:contactCode withContent:@"Profile code needs to be selected." withView:self.view];
+        
+        [validationMethods validationPopupForObject:contactCode withContent:@"Profile code needs to be selected." withView:self.view];
         return;
     }
 
     if (contactName.text.length == 0) {
-        [_validationMethods validationPopupForObject:contactName withContent:@"Contact needs a name." withView:self.view];
+        
+        [validationMethods validationPopupForObject:contactName withContent:@"Contact needs a name." withView:self.view];
         return;
     }
 
     if (contactNumber.text.length == 0 && contactEmail.text.length == 0) {
-        [_validationMethods validationPopupForObject:contactNumber withContent:@"Contact needs a phone No. or Email." withView:self.view];
+        
+        [validationMethods validationPopupForObject:contactNumber withContent:@"Contact needs a phone No. or Email." withView:self.view];
         return;
     }
 
@@ -362,6 +384,7 @@
 
     [self setProfileDoc:nil];
     profileCode = nil;
+    characterCountLabel = nil;
     [super viewDidUnload];
 }
 

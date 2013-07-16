@@ -5,10 +5,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--Main View Controller - CRYPTEXT-->
+        <!--Main View Controller - Main-->
         <scene sceneID="5">
             <objects>
-                <viewController title="CRYPTEXT" id="2" customClass="OTBMainViewController" sceneMemberID="viewController">
+                <viewController title="Main" id="2" customClass="OTBMainViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -165,7 +165,6 @@
                         <outlet property="infoButton" destination="X89-hE-2ZT" id="13m-72-mNK"/>
                         <outlet property="inputPanel" destination="xs0-zn-7XI" id="fjf-xH-xZy"/>
                         <outlet property="inputView" destination="6iC-b0-gka" id="3z7-QY-btX"/>
-                        <outlet property="mainToolbar" destination="0TE-Oi-cq6" id="TLg-hE-7U0"/>
                         <outlet property="outputButton" destination="cOY-kz-gAk" id="Jaq-ky-aQt"/>
                         <outlet property="outputPanel" destination="ymR-Zc-lMO" id="gUv-t4-Ph0"/>
                         <outlet property="outputView" destination="LDr-c5-Kvm" id="TTh-3a-0If"/>
@@ -444,7 +443,6 @@
         <scene sceneID="WNN-Ob-rXT">
             <objects>
                 <navigationController storyboardIdentifier="Profiles" title="Profiles" id="ywI-Xa-qvC" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Profiles" image="profiles2.png" id="034-6j-2d1"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="jFZ-Ld-Ngn"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
@@ -482,11 +480,10 @@
             </objects>
             <point key="canvasLocation" x="1049" y="-527"/>
         </scene>
-        <!--Navigation Controller - Send-->
+        <!--Navigation Controller-->
         <scene sceneID="r0Z-T6-K7Z">
             <objects>
                 <navigationController id="kez-SF-SOV" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" tag="1" title="Send" image="send.png" id="0TE-Oi-cq6"/>
                     <toolbarItems/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="blackOpaque" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="blackOpaque" id="MY0-q9-rY5">
@@ -513,9 +510,7 @@
         <image name="leather-back8.png" width="768" height="1027"/>
         <image name="leftribbon.png" width="16" height="16"/>
         <image name="mainribbon.png" width="16" height="16"/>
-        <image name="profiles2.png" width="44" height="44"/>
         <image name="rightribbon.png" width="16" height="16"/>
-        <image name="send.png" width="44" height="44"/>
         <image name="uparrow.png" width="34" height="62"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
@@ -524,8 +519,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="bvG-Ys-OAY"/>
-        <segue reference="gdM-di-o9X"/>
         <segue reference="lJx-Bq-Wvx"/>
+        <segue reference="UGe-TF-UmU"/>
+        <segue reference="LX6-Dj-TDp"/>
     </inferredMetricsTieBreakers>
 </document>

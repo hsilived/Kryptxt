@@ -7,17 +7,22 @@
 //
 
 #import "OTBEditProfilesViewController.h"
+#import "OTBProfilesViewController.h"
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
 #import  <QuartzCore/QuartzCore.h>
 #import "ValidationMethods.h"
 #import "GeneralHelpers.h"
 #import "OTBModalPopup.h"
+#import "ECSlidingViewController.h"
 
 @interface OTBMainViewController : UIViewController <OTBModalPopupDelegate, MFMailComposeViewControllerDelegate, UIPopoverControllerDelegate, UIActionSheetDelegate, MFMessageComposeViewControllerDelegate> {
     
     GeneralHelpers* generalHelpers;
     ValidationMethods *validationMethods;
+    OTBEditProfilesViewController *editProfileViewController;
+    OTBProfilesViewController *profiles;
+    
     IBOutlet UIImageView *downArrow;
     IBOutlet UIImageView *upArrow;
     IBOutlet UILabel *tempCode;
@@ -30,6 +35,8 @@
     IBOutlet UIButton *infoButton;
     IBOutlet UIView *containerPanel;
     IBOutlet UIView *confidentalView;
+    IBOutlet UINavigationBar *navBar;
+    IBOutlet UINavigationItem *navItem;
     
     NSString *profileCode;
     NSString *alphaCode;
@@ -44,7 +51,6 @@
 
 @property(retain) ProfileDoc *profileDoc;
 @property(retain) NSMutableArray *profiles;
-@property(retain) OTBEditProfilesViewController *editProfileViewController;
 
 - (void)loadProfileInfo;
 
@@ -83,5 +89,6 @@
 - (IBAction)showActionSheet:(id)sender;
 
 - (IBAction)infoOpen:(id)sender;
+- (IBAction)revealUnderRight:(id)sender;
 
 @end

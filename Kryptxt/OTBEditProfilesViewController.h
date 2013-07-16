@@ -11,6 +11,7 @@
 #import "PeoplePicker.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ValidationMethods.h"
+#import "GeneralHelpers.h"
 
 @class ProfileDoc;
 
@@ -18,7 +19,12 @@
 
 @end
 
-@interface OTBEditProfilesViewController : UIViewController <UIPickerViewDelegate> {
+@interface OTBEditProfilesViewController : UIViewController  <UITextFieldDelegate,UIPickerViewDelegate> {
+    
+    GeneralHelpers* generalHelpers;
+    ValidationMethods *validationMethods;
+    KeyboardHelper *kbHelper;
+    PeoplePicker *peoplePicker;
     
     NSArray *digits;
     NSMutableDictionary *labels;
@@ -38,6 +44,7 @@
     IBOutlet UILabel *contactCode6;
     IBOutlet UILabel *contactCode7;
     IBOutlet UILabel *contactCode8;
+    IBOutlet UILabel *characterCountLabel;
     
     NSString *profileCode;
     UIPickerView *codeGen;
@@ -47,9 +54,6 @@
 }
 
 @property(weak, nonatomic) id <OTBEditProfilesViewControllerDelegate> delegate;
-@property(nonatomic, strong) ValidationMethods *validationMethods;
-@property(nonatomic, strong) KeyboardHelper *kbHelper;
-@property(nonatomic, strong) PeoplePicker *peoplePicker;
 @property(retain) ProfileDoc *profileDoc;
 
 @property(retain) NSMutableArray *profiles;
@@ -73,7 +77,5 @@
 - (IBAction)closeFirstPicker:(id)sender;
 
 - (void)closePicker;
-
-- (void)createBackgroundLayerWithView:(UIView *)view;
 
 @end

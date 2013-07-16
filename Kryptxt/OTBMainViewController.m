@@ -10,7 +10,9 @@
 #import "ProfileDoc.h"
 #import "ProfileData.h"
 #import "ProfileDatabase.h"
-
+#import "MFSideMenuContainerViewController.h"
+#import "MMDrawerBarButtonItem.h"
+#import "OTBNavigationTitle.h"
 
 @implementation OTBMainViewController
 
@@ -27,22 +29,63 @@
     generalHelpers = [[GeneralHelpers alloc] init];
     validationMethods = [[ValidationMethods alloc] init];
     
-    [generalHelpers createBackgroundLayerWithView:containerPanel BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor colorWithRed:250/255.0 green:210/255.0 blue:118/255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:90/255.0 green:90/255.0 blue:90/255.0 alpha:(1.0)]];
+    [generalHelpers createBackgroundLayerWithView:containerPanel BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:106/255.0 green:127/255.0 blue:147/255.0 alpha:(1.0)]];
     
     //put border around top panel
-    [generalHelpers addDesignToView:inputPanel BorderWidth:2 CornerRadius:20 BorderColor:[UIColor colorWithRed:193/255.0 green:118/255.0 blue:5/255.0 alpha:(1.0)]];
+    [generalHelpers addDesignToView:inputPanel BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
     
     //put border around bottom panel
-    [generalHelpers addDesignToView:outputPanel BorderWidth:2 CornerRadius:20 BorderColor:[UIColor colorWithRed:193/255.0 green:118/255.0 blue:5/255.0 alpha:(1.0)]];
+    [generalHelpers addDesignToView:outputPanel BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
 
     //add the logo image to the navigation bar
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"kryptxt-logo-b.png"]];
+    //UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"kryptxt-logo-b.png"]];
 
-    self.navigationItem.titleView = imageView;
-
-    tempCode.font = [UIFont fontWithName:@"Capture it" size:52.0];
+    OTBNavigationTitle *imageView = [[OTBNavigationTitle alloc] initWithFrame:CGRectMake(0, 0, 129, 41)];
     
-    //[self rotateView:confidentalImage deg:45];
+    //navItem.titleView = imageView;
+    [navItem setTitleView:imageView];
+    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:228/255.0 green:231/255.0 blue:238/255.0 alpha:1.0]];
+    //[navBar setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    
+    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                [UIColor colorWithRed:128/255.0 green:0/255.0 blue:0/255.0 alpha:1.0], UITextAttributeTextColor,
+                                [UIColor whiteColor], UITextAttributeTextShadowColor,
+                                [NSValue valueWithUIOffset:UIOffsetMake(-1, 0)], UITextAttributeTextShadowOffset,
+                                nil];
+    
+    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    
+    [self.navigationController setToolbarHidden:NO];
+    
+    [self setupRightMenuButton];
+    
+    tempCode.font = [UIFont fontWithName:@"Capture it" size:72.0];
+    
+    
+    // shadowPath, shadowOffset, and rotation is handled by ECSlidingViewController.
+    // You just need to set the opacity, radius, and color.
+    self.view.layer.shadowOpacity = 0.75f;
+    self.view.layer.shadowRadius = 10.0f;
+    self.view.layer.shadowColor = [UIColor blackColor].CGColor;
+    
+    
+    if (![self.slidingViewController.underRightViewController isKindOfClass:[OTBProfilesViewController class]]) {
+        self.slidingViewController.underRightViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UnderRight"];
+    }
+    
+    [self.view addGestureRecognizer:self.slidingViewController.panGesture];
+    
+    
+    
+//    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+//    [doubleTap setNumberOfTapsRequired:2];
+//    [self.view addGestureRecognizer:doubleTap];
+//    
+//    UITapGestureRecognizer *twoFingerDoubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(twoFingerDoubleTap:)];
+//    [twoFingerDoubleTap setNumberOfTapsRequired:2];
+//    [twoFingerDoubleTap setNumberOfTouchesRequired:2];
+//    [self.view addGestureRecognizer:twoFingerDoubleTap];
+    //[self setupRightMenuButton];
     
     confidentalView.transform = CGAffineTransformRotate(confidentalView.transform, degreesToRadians(8));
     [self setupKeyboardToolbar];
@@ -52,7 +95,11 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 
+    [super viewWillAppear:animated];
+    NSLog(@"Center will appear");
+    
     if (inputView.text.length == 0) {
+        
         upArrow.hidden = YES;
         downArrow.hidden = YES;
     }
@@ -60,6 +107,24 @@
     [self loadDefaults];
 
     [self loadProfileInfo];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+    NSLog(@"Center did appear");
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    
+    [super viewWillDisappear:animated];
+    NSLog(@"Center will disappear");
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    
+    [super viewDidDisappear:animated];
+    NSLog(@"Center did disappear");
 }
 
 - (void)didReceiveMemoryWarning {
@@ -73,6 +138,8 @@
     [self setTitle:nil];
     containerPanel = nil;
     confidentalView = nil;
+    navBar = nil;
+    navItem = nil;
     [super viewDidUnload];
 }
 
@@ -83,15 +150,15 @@
     _profiles = [ProfileDatabase loadProfileDocs];
 
     if (self.profileDoc == nil) {
+        
         self.profileDoc = [[ProfileDoc alloc] initWithTitle:@"" ProfileCode:@"0" ContactName:@"" ContactNumber:@"" ContactEmail:@"" Selected:NO];
     }
 
     if (_profiles.count < 1) {
+        
         self.profileDoc.data.title = @"Default Profile";
         self.profileDoc.data.profileCode = @"01234567";
         self.profileDoc.data.contactName = @"Some Close Friend";
-//self.profileDoc.data.contactNumber = @"0123456789";
-//self.profileDoc.data.contactEmail = @"friend@orangethinkbox.com";
         self.profileDoc.data.selected = YES;
 
         [self.profileDoc saveData];
@@ -105,10 +172,12 @@
     tempCode.text = @"";
 
     for (int i = 0; i < _profiles.count; i++) {
+        
         ProfileDoc *doc = [_profiles objectAtIndex:i];
 
         if (doc.data.selected) {
-//assign the selected profile to the profileDoc
+            
+            //assign the selected profile to the profileDoc
             _profileDoc = doc;
 
             if (doc.data.profileCode != NULL)
@@ -129,6 +198,7 @@
         [self showAlertWarning];
     }
     else {
+        
         alphaCode = @"";
 
         letterBlock1 = [[NSMutableArray alloc] initWithObjects:@"A", @"B", @"C", @"D", nil];
@@ -646,44 +716,18 @@
     [acSheet presentInView:sender.superview.window];
 }
 
-- (void)rotateView:(UIView *)someView deg:(CGFloat)degrees
-{
-	//int direction = inDirection == ROTATE_LEFT_TAG ? -1 : 1;
-	CABasicAnimation* rotationAnimation = [CABasicAnimation animationWithKeyPath:@"transform.rotation.z"];
-	rotationAnimation.toValue = @(degrees * M_PI / 180);
-	rotationAnimation.duration = 0.0f;
-    rotationAnimation.removedOnCompletion = NO;
-	rotationAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-	[someView.layer addAnimation:rotationAnimation forKey:@"rotateAnimation"];
-}
+# pragma mark - slideout methods
 
-- (UIImage *)imageRotatedByDegrees:(UIImage *)oldImage deg:(CGFloat)degrees {
-    
-    // calculate the size of the rotated view's containing box for our drawing space
-    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0, 0, oldImage.size.width, oldImage.size.height)];
-    CGAffineTransform t = CGAffineTransformMakeRotation(degrees * M_PI / 180);
-    rotatedViewBox.transform = t;
-    CGSize rotatedSize = rotatedViewBox.frame.size;
-    
-    // Create the bitmap context
-    UIGraphicsBeginImageContext(rotatedSize);
-    CGContextRef bitmap = UIGraphicsGetCurrentContext();
-    
-    // Move the origin to the middle of the image so we will rotate and scale around the center.
-    CGContextTranslateCTM(bitmap, rotatedSize.width / 2, rotatedSize.height / 2);
-    
-    // Rotate the image context
-    CGContextRotateCTM(bitmap, (degrees * M_PI / 180));
-    
-    // Now, draw the rotated/scaled image into the context
-    CGContextScaleCTM(bitmap, 1.0, -1.0);
-    CGContextDrawImage(bitmap, CGRectMake(-oldImage.size.width / 2, -oldImage.size.height / 2, oldImage.size.width, oldImage.size.height), [oldImage CGImage]);
-    
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return newImage;
-}
+//- (void)doubleTap:(UITapGestureRecognizer *)gesture {
+//    
+//    [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
+//}
+//
+//- (void)twoFingerDoubleTap:(UITapGestureRecognizer *)gesture {
+//    
+//    [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
+//}
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
@@ -692,6 +736,17 @@
         OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
         controller.profileDoc = _profileDoc;
     }
+}
+
+- (IBAction)revealUnderRight:(id)sender {
+    
+    [self.slidingViewController anchorTopViewTo:ECLeft];
+}
+
+- (void)setupRightMenuButton {
+    
+    MMDrawerBarButtonItem *rightDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(revealUnderRight:)];
+    [navItem setRightBarButtonItem:rightDrawerButton animated:YES];
 }
 
 @end

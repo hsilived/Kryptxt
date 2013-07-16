@@ -6,7 +6,9 @@
 //  Copyright (c) 2013 Orange Think Box. All rights reserved.
 //
 
-#ifdef DEBUG
+#define DLog_ENABLE_LOGGING      0
+
+#if DLog_ENABLE_LOGGING
 #define DLog(xx, ...) NSLog(@"%s(%d): " xx, ((strrchr(__FILE__, '/') ? : __FILE__- 1) + 1), __LINE__, ##__VA_ARGS__)
 #else
 #define DLog(xx, ...) ((void)0)

@@ -7,21 +7,75 @@
 //
 
 #import "OTBAppDelegate.h"
+//#import "MMDrawerController.h"
+//#import "MMDrawerController+Storyboard.h"
+//#import "MMDrawerVisualState.h"
+//#import "MFSideMenuContainerViewController.h"
 
 @implementation OTBAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
     main = [[OTBMainViewController alloc] init];
-    imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"default@2x.png"]];
-    [[main view] addSubview:imageView];
-    [[main view] bringSubviewToFront:imageView];
+    //profiles = [[OTBProfilesViewController alloc] init];
     
+    //UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard_iPad" bundle:[NSBundle mainBundle]];
+    
+    
+    
+//    UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
+//    UINavigationController *navigationProfiles = [storyboard instantiateViewControllerWithIdentifier:@"Profiles"];
+    
+//    MFSideMenuContainerViewController *sideMenu = [MFSideMenuContainerViewController containerWithCenterViewController:navigationController leftMenuViewController:nil rightMenuViewController:navigationProfiles];
+//    return YES;
+//    
+//    
+//    
+//    MFSideMenuContainerViewController *container = (MFSideMenuContainerViewController *)self.window.rootViewController;
+    
+    //UINavigationController *navigationController = [storyboard instantiateViewControllerWithIdentifier:@"navigationController"];
+    //UIViewController *rightSideMenuViewController = [storyboard instantiateViewControllerWithIdentifier:@"rightSideMenuViewController"];
+    //UINavigationController *navigationProfiles = [storyboard instantiateViewControllerWithIdentifier:@"Profiles"];
+    
+    
+    
+//    [container setRightMenuViewController:navigationProfiles];
+//    [container setCenterViewController:navigationController];
+//    
+//    [self.window makeKeyAndVisible];
+    
+    //self.window.rootViewController = container;
+    
+    //profiles = [[OTBProfilesViewController alloc] init];
+    
+    //UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:main];
+    
+//    MMDrawerController * drawerController = (MMDrawerController *)self.window.rootViewController;
+//    [drawerController setMaximumRightDrawerWidth:320.0];
+//    [drawerController setShowsShadow:NO];
+//    [drawerController setCenterHiddenInteractionMode:MMDrawerOpenCenterInteractionModeNone];
+//    [drawerController setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+//    [drawerController setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+//
+//    [drawerController setDrawerVisualStateBlock:^(MMDrawerController *drawerController, MMDrawerSide drawerSide, CGFloat percentVisible) {
+//        
+//        if(drawerSide == MMDrawerSideNone) {
+//            
+//            NSLog(@"SideNone");
+//            return;
+//        }}];
+    
+    //[self.window setRootViewController:drawerController];
+    
+//    imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"default@2x.png"]];
+//    [[main view] addSubview:imageView];
+//    [[main view] bringSubviewToFront:imageView];
+//
+//    //now fade out splash image
+//    [UIView transitionWithView:self.window duration:6.0f options:UIViewAnimationOptionTransitionNone animations:^(void){imageView.alpha=0.0f;} completion:^(BOOL finished){[imageView removeFromSuperview];}];
+//    
     // as usual
     [self.window makeKeyAndVisible];
-    
-    //now fade out splash image
-    [UIView transitionWithView:self.window duration:6.0f options:UIViewAnimationOptionTransitionNone animations:^(void){imageView.alpha=0.0f;} completion:^(BOOL finished){[imageView removeFromSuperview];}];
     
     return YES;
 }
