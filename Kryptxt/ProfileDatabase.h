@@ -6,9 +6,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ProfileDatabase : NSObject {
-
-}
+@interface ProfileDatabase : NSObject
 
 + (NSMutableArray *)loadProfileDocs;
 

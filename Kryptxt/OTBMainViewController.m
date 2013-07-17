@@ -7,10 +7,6 @@
 //
 
 #import "OTBMainViewController.h"
-#import "ProfileDoc.h"
-#import "ProfileData.h"
-#import "ProfileDatabase.h"
-#import "MFSideMenuContainerViewController.h"
 #import "MMDrawerBarButtonItem.h"
 #import "OTBNavigationTitle.h"
 
@@ -44,24 +40,23 @@
     
     //navItem.titleView = imageView;
     [navItem setTitleView:imageView];
-    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:228/255.0 green:231/255.0 blue:238/255.0 alpha:1.0]];
+    //[[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:228/255.0 green:231/255.0 blue:238/255.0 alpha:1.0]];
     //[navBar setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
-    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-                                [UIColor colorWithRed:128/255.0 green:0/255.0 blue:0/255.0 alpha:1.0], UITextAttributeTextColor,
-                                [UIColor whiteColor], UITextAttributeTextShadowColor,
-                                [NSValue valueWithUIOffset:UIOffsetMake(-1, 0)], UITextAttributeTextShadowOffset,
-                                nil];
-    
-    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    
-    [self.navigationController setToolbarHidden:NO];
+//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                [UIColor colorWithRed:128/255.0 green:0/255.0 blue:0/255.0 alpha:1.0], UITextAttributeTextColor,
+//                                [UIColor whiteColor], UITextAttributeTextShadowColor,
+//                                [NSValue valueWithUIOffset:UIOffsetMake(-1, 0)], UITextAttributeTextShadowOffset,
+//                                nil];
+//    
+//    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
+//    
+    //[self.navigationController setToolbarHidden:NO];
     
     [self setupRightMenuButton];
     
-    tempCode.font = [UIFont fontWithName:@"Capture it" size:72.0];
-    
-    
+    tempCode.font = [UIFont fontWithName:@"Capture it" size:tempCode.font.pointSize];
+
     // shadowPath, shadowOffset, and rotation is handled by ECSlidingViewController.
     // You just need to set the opacity, radius, and color.
     self.view.layer.shadowOpacity = 0.75f;
@@ -140,6 +135,7 @@
     confidentalView = nil;
     navBar = nil;
     navItem = nil;
+    containerImage = nil;
     [super viewDidUnload];
 }
 
@@ -220,6 +216,7 @@
     NSMutableArray *code = [NSMutableArray arrayWithCapacity:8];
 
     for (int x = 0; x < 8; x++) {
+        
         [code addObject:[profileCode substringWithRange:NSMakeRange(x, 1)]];
         DLog(@"code digit %d - %@", x, [code objectAtIndex:x]);
     }
@@ -227,6 +224,7 @@
     int direction = [[code objectAtIndex:6] intValue];
 
     for (int x = 1; x < 6; x++) {
+        
         int shift = [[code objectAtIndex:x] intValue];
 
         switch (x) {
@@ -279,6 +277,7 @@
 - (NSMutableArray *)rearrangeArray:(NSMutableArray *)array WithShift:(NSInteger)shift WithDirection:(NSInteger)direction {
 
     if (shift > array.count) {
+        
         do shift = shift - array.count;
         while (shift > array.count);
     }
@@ -290,7 +289,8 @@
         shift = -shift;
 
     if (shift == 0) {
-//let's mix this up and send this shift opposite all of the others
+        
+        //let's mix this up and send this shift opposite all of the others
         if ((direction % 2 != 0) || (direction == 0))
             shift = -1;
         else
@@ -302,7 +302,8 @@
     DLog(@"shift %d", shift);
 
     if (shift > 0) {
-//shifting letters to the right
+        
+        //shifting letters to the right
         for (NSInteger i = shift; i > 0; i--) {
             NSObject *obj = [array lastObject];
             [array insertObject:obj atIndex:0];
@@ -310,7 +311,8 @@
         }
     }
     else {
-//shifting letters to the left
+        
+        //shifting letters to the left
         for (NSInteger i = -shift; i > 0; i--) {
             NSObject *obj = [array objectAtIndex:0];
             [array insertObject:obj atIndex:array.count];
@@ -365,21 +367,24 @@
 - (void)sendEmail {
 
     if (_profileDoc.data.contactEmail.length == 0) {
+        
         [validationMethods validationPopupForObject:currentProfile withContent:@"Profile needs an email address." withView:self.view];
         return;
     }
 
     if (outputView.text.length == 0) {
+        
         [validationMethods validationPopupForObject:inputView withContent:@"Convert a message to send first." withView:self.view];
         return;
     }
 
-
     if ([MFMailComposeViewController canSendMail]) {
+        
         MFMailComposeViewController *mailComposeVC = [[MFMailComposeViewController alloc] init];
         mailComposeVC.mailComposeDelegate = self;
 
         NSString *email = _profileDoc.data.contactEmail;
+        
         if (email) {
             NSArray *recipients = [[NSArray alloc] initWithObjects:email, nil];
 
@@ -401,11 +406,13 @@
 - (void)sendText {
 
     if (_profileDoc.data.contactNumber.length == 0) {
+        
         [validationMethods validationPopupForObject:currentProfile withContent:@"Profile needs a phone number." withView:self.view];
         return;
     }
 
     if (outputView.text.length == 0) {
+        
         [validationMethods validationPopupForObject:inputView withContent:@"Convert a message to text first." withView:self.view];
         return;
     }
@@ -413,6 +420,7 @@
     NSString *phone = _profileDoc.data.contactNumber;
 
     if (phone) {
+        
         NSArray *recipients = [[NSArray alloc] initWithObjects:phone, nil];
 
         [self sendSMSer:recipients messageBody:outputView.text];
@@ -443,6 +451,7 @@
 - (void)CopyToClipboard {
 
     if (outputView.text.length == 0) {
+        
         [validationMethods validationPopupForObject:inputView withContent:@"Convert a message to copy first." withView:self.view];
         return;
     }
@@ -466,7 +475,8 @@
 #pragma mark - top Keyboard bar setup & events
 
 - (void)setupKeyboardToolbar {
-//add the done and cancel bar to the keyboard
+    
+    //add the done and cancel bar to the keyboard
     UIToolbar *keyboardToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
     keyboardToolbar.barStyle = UIBarStyleBlack;
     keyboardToolbar.items = [NSArray arrayWithObjects:
@@ -732,9 +742,12 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
     if ([segue.identifier isEqualToString:@"jumpToEditProfile"]) {
-        UINavigationController *navigationController = segue.destinationViewController;
-        OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
-        controller.profileDoc = _profileDoc;
+        
+        OTBEditProfilesViewController *controller = segue.destinationViewController;
+        //UINavigationController *navigationController = segue.destinationViewController;
+        //OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
+        //editProfileViewController = [[OTBEditProfilesViewController alloc] init];
+        controller.profile = _profileDoc;
     }
 }
 

@@ -13,5 +13,8 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import "DLog.h"
+#import "ProfileDoc.h"
+#import "profileData.h"
+#import "profileDatabase.h"
 
 #endif

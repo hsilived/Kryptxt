@@ -28,7 +28,7 @@
     view.layer.shadowOffset = CGSizeMake(0, 0);
     //view.layer.shadowOffset = CGSizeMake(-10, 0.0);
     view.layer.shadowColor = [[UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:150 / 255.0 alpha:(0.9)] CGColor];
-    view.layer.masksToBounds = NO;
+    view.layer.masksToBounds = YES;
     view.layer.shadowOpacity = 0.5;
 }
 

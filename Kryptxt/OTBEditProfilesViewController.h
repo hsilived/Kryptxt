@@ -19,7 +19,7 @@
 
 @end
 
-@interface OTBEditProfilesViewController : UIViewController  <UITextFieldDelegate,UIPickerViewDelegate> {
+@interface OTBEditProfilesViewController : UIViewController  <UITextFieldDelegate, UIPickerViewDelegate> {
     
     GeneralHelpers* generalHelpers;
     ValidationMethods *validationMethods;
@@ -28,7 +28,7 @@
     
     NSArray *digits;
     NSMutableDictionary *labels;
-
+    UIPopoverController *popover;
     IBOutlet UIView *containerPanel;
     IBOutlet UIView *mainView;
     IBOutlet UITextField *profileName;
@@ -45,20 +45,20 @@
     IBOutlet UILabel *contactCode7;
     IBOutlet UILabel *contactCode8;
     IBOutlet UILabel *characterCountLabel;
+    IBOutlet UINavigationItem *navItem;
     
     NSString *profileCode;
     UIPickerView *codeGen;
     NSMutableString *code;
+    NSMutableArray *profiles;
     UIView *modalBackground;
     UIView *navBackground;
+    UIView *pickerDisplayView;
 }
 
 @property(weak, nonatomic) id <OTBEditProfilesViewControllerDelegate> delegate;
-@property(retain) ProfileDoc *profileDoc;
 
-@property(retain) NSMutableArray *profiles;
-
-@property(strong, nonatomic) UIView *pickerDisplayView;
+@property(retain) ProfileDoc *profile;
 
 - (IBAction)showActionSheet:(id)sender;
 
@@ -66,9 +66,9 @@
 
 - (void)randomize;
 
-- (void)cancelButton;
+- (IBAction)cancelButton:(id)sender;
 
-- (void)saveButton;
+- (IBAction)saveButton:(id)sender;
 
 - (void)onDoneCodePicking;
 

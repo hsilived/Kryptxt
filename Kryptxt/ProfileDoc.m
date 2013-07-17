@@ -7,8 +7,8 @@
 #import "ProfileData.h"
 #import "ProfileDatabase.h"
 
-#define kDataKey        @"Data"
-#define kDataFile       @"data.plist"
+#define kDataKey @"Data"
+#define kDataFile @"data.plist"
 //#define kThumbImageFile @"thumbImage.png"
 //#define kFullImageFile  @"fullImage.png"
 
@@ -36,8 +36,7 @@
 
 - (id)init {
 
-    if ((self = [super init])) {
-    }
+    if ((self = [super init])) {}
 
     return self;
 }

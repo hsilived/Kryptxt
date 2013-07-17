@@ -16,7 +16,5 @@
 
 - (void)toggleSelected;
 
-//- (id)initWithTitle:(NSString*)title ProfileCode:(NSString *)profileCode;
-//- (id)initWithTitle:(NSString*)title ProfileCode:(NSString *)profileCode Selected:(BOOL)selected;
-- (id)initWithTitle:(NSString *)title ProfileCode:(NSString *)profileCode ContactName:contactName ContactNumber:contactNumber ContactEmail:(NSString *)contactEmail Selected:(BOOL)selected;
+- (id)initWithTitle:(NSString *)_title ProfileCode:(NSString *)_profileCode ContactName:(NSString *)_contactName ContactNumber:(NSString *)_contactNumber ContactEmail:(NSString *)_contactEmail Selected:(BOOL)_selected;
 @end

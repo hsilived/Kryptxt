@@ -37,6 +37,7 @@
     IBOutlet UIView *confidentalView;
     IBOutlet UINavigationBar *navBar;
     IBOutlet UINavigationItem *navItem;
+    IBOutlet UIImageView *containerImage;
     
     NSString *profileCode;
     NSString *alphaCode;

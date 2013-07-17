@@ -43,8 +43,8 @@
     self = [super initWithFrame:frame];
     if (self){
         
-        [self setMenuButtonNormalColor:[UIColor colorWithRed:139.0/255.0 green:135.0/255.0 blue:136.0/255.0 alpha:0.9f]];
-        [self setMenuButtonHighlightedColor:[[UIColor whiteColor] colorWithAlphaComponent:0.9f]];
+        [self setMenuButtonNormalColor:[[UIColor whiteColor] colorWithAlphaComponent:0.9f]];
+        [self setMenuButtonHighlightedColor:[UIColor colorWithRed:139.0/255.0 green:135.0/255.0 blue:136.0/255.0 alpha:0.9f]];
         
         [self setShadowNormalColor:[[UIColor blackColor] colorWithAlphaComponent:0.2f]];
         [self setShadowHighlightedColor:[[UIColor blackColor] colorWithAlphaComponent:0.5f]];
