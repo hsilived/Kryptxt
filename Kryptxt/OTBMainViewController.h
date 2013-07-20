@@ -21,7 +21,6 @@
     GeneralHelpers* generalHelpers;
     ValidationMethods *validationMethods;
     OTBEditProfilesViewController *editProfileViewController;
-    OTBProfilesViewController *profiles;
     
     IBOutlet UIImageView *downArrow;
     IBOutlet UIImageView *upArrow;
@@ -33,8 +32,8 @@
     IBOutlet UIView *outputPanel;
     IBOutlet UIButton *outputButton;
     IBOutlet UIButton *infoButton;
-    IBOutlet UIView *containerPanel;
-    IBOutlet UIView *confidentalView;
+    IBOutlet UIView *containerView;
+    IBOutlet UIView *confidentialView;
     IBOutlet UINavigationBar *navBar;
     IBOutlet UINavigationItem *navItem;
     IBOutlet UIImageView *containerImage;

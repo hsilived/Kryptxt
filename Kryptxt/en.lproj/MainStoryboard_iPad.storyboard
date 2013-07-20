@@ -166,7 +166,7 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
                                                 <connections>
-                                                    <segue destination="LZF-pi-Yka" kind="modal" identifier="jumpToEditProfile" id="pvo-ge-YOM"/>
+                                                    <segue destination="LZF-pi-Yka" kind="modal" identifier="jumpToEditProfile2" id="pvo-ge-YOM"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -221,8 +221,8 @@
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="confidentalView" destination="ptg-aX-hTd" id="qlq-cl-9qy"/>
-                        <outlet property="containerPanel" destination="dHv-cs-fNo" id="h7K-oX-Mcf"/>
+                        <outlet property="confidentialView" destination="ptg-aX-hTd" id="BRb-yX-pM2"/>
+                        <outlet property="containerView" destination="dHv-cs-fNo" id="EPD-GT-YJK"/>
                         <outlet property="currentProfile" destination="pfc-O8-X3Q" id="akw-wp-Wjd"/>
                         <outlet property="downArrow" destination="BqD-37-fox" id="Jr0-LZ-OIZ"/>
                         <outlet property="infoButton" destination="8d0-Dj-s6o" id="WGl-vB-Sv2"/>
@@ -281,11 +281,11 @@
                                         <rect key="frame" x="0.0" y="0.0" width="592" height="890"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <view contentMode="scaleToFill" id="2H8-Pw-NWm">
-                                        <rect key="frame" x="14" y="12" width="565" height="572"/>
+                                    <view opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="2H8-Pw-NWm">
+                                        <rect key="frame" x="14" y="12" width="565" height="620"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES"/>
                                         <subviews>
-                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Profile Name" textAlignment="center" minimumFontSize="17" background="kryptxtpanel.png" id="Bhm-LB-Ehn">
+                                            <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" placeholder="Profile Name" textAlignment="center" minimumFontSize="17" background="kryptxtpanel.png" id="Bhm-LB-Ehn" userLabel="Profile Name Text Field">
                                                 <rect key="frame" x="28" y="31" width="510" height="72"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -398,8 +398,8 @@
                                                     </button>
                                                 </subviews>
                                             </view>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="H5m-c5-Ncp">
-                                                <rect key="frame" x="405" y="304" width="150" height="40"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="H5m-c5-Ncp" userLabel="Import Contact Button">
+                                                <rect key="frame" x="405" y="348" width="150" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" size="button"/>
                                                 <state key="normal" title="Import Contact" backgroundImage="blankbutton.png">
@@ -413,48 +413,74 @@
                                                     <action selector="showPicker:" destination="LZF-pi-Yka" eventType="touchUpInside" id="WKf-3b-h3B"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wfR-br-Dn1">
-                                                <rect key="frame" x="86" y="352" width="101" height="41"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wfR-br-Dn1" userLabel="Name Label">
+                                                <rect key="frame" x="86" y="396" width="101" height="41"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                                 <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="pc6-nN-crI">
-                                                <rect key="frame" x="195" y="352" width="360" height="60"/>
+                                            <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="pc6-nN-crI" userLabel="Name Text Field">
+                                                <rect key="frame" x="195" y="396" width="360" height="60"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Phone No." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="c0l-Bq-0Hc">
-                                                <rect key="frame" x="13" y="420" width="174" height="38"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Phone No." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="c0l-Bq-0Hc" userLabel="Phone Label">
+                                                <rect key="frame" x="13" y="464" width="174" height="38"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                                 <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="N6s-C4-5Ir">
-                                                <rect key="frame" x="195" y="420" width="360" height="60"/>
+                                            <textField opaque="NO" clipsSubviews="YES" tag="3" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="N6s-C4-5Ir" userLabel="Phone Text Field">
+                                                <rect key="frame" x="195" y="464" width="360" height="60"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                             </textField>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Email" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="H3K-6D-RKM">
-                                                <rect key="frame" x="91" y="488" width="96" height="46"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Email" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="H3K-6D-RKM" userLabel="Email Label">
+                                                <rect key="frame" x="91" y="532" width="96" height="46"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="36"/>
                                                 <color key="textColor" red="0.20000000300000001" green="0.20000000300000001" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="TLM-gj-d5D">
-                                                <rect key="frame" x="195" y="488" width="360" height="60"/>
+                                            <textField opaque="NO" clipsSubviews="YES" tag="4" contentMode="scaleToFill" restorationIdentifier="" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="bezel" minimumFontSize="17" background="kryptxtpanel.png" id="TLM-gj-d5D" userLabel="Email Text Field">
+                                                <rect key="frame" x="195" y="532" width="360" height="60"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                 <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                                             </textField>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="1m1-he-D1z" userLabel="reset Button">
+                                                <rect key="frame" x="27" y="275" width="511" height="36"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                <state key="normal">
+                                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <state key="highlighted">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                            </button>
+                                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="left" text="Code prior to change was" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="P6s-s2-BqQ" userLabel="Prior Code text Label">
+                                                <rect key="frame" x="28" y="279" width="362" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <color key="textColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="left" text="00000000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="9jh-Wz-GBy" userLabel="Backup Code Label">
+                                                <rect key="frame" x="398" y="279" width="140" height="21"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                <color key="textColor" red="0.29803922770000002" green="0.29803922770000002" blue="0.29803922770000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                     </view>
                                 </subviews>
@@ -539,6 +565,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="AcO-1n-Jhg">
                                 <rect key="frame" x="0.0" y="44" width="768" height="960"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell opaque="NO" contentMode="scaleToFill" selectionStyle="gray" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationWidth="0.0" reuseIdentifier="ProfileCell" id="r3Q-O9-454">
                                         <rect key="frame" x="0.0" y="22" width="768" height="44"/>
@@ -578,21 +605,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Qm1-2S-5vj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-415" y="801"/>
-        </scene>
-        <!--Side Menu Container View Controller-->
-        <scene sceneID="nT8-X2-YnK">
-            <objects>
-                <viewController storyboardIdentifier="MFSideMenuContainerViewController" id="nt5-2l-PDk" customClass="MFSideMenuContainerViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="5yB-uJ-nSW">
-                        <rect key="frame" x="0.0" y="20" width="768" height="1004"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackTranslucent"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="A3Y-Hp-0VD" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1448" y="-1550"/>
         </scene>
         <!--Initial Sliding View Controller-->
         <scene sceneID="9aF-81-uNh">
@@ -637,12 +649,84 @@
         <image name="right-redribbon-ipad.png" width="104" height="122"/>
         <image name="uparrow.png" width="34" height="62"/>
     </resources>
+    <classes>
+        <class className="ECSlidingViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ECSlidingViewController.h"/>
+        </class>
+        <class className="InitialSlidingViewController" superclassName="ECSlidingViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/InitialSlidingViewController.h"/>
+        </class>
+        <class className="OTBEditProfilesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBEditProfilesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelButton:"/>
+                <relationship kind="action" name="closeFirstPicker:"/>
+                <relationship kind="action" name="resetCode:"/>
+                <relationship kind="action" name="saveButton:"/>
+                <relationship kind="action" name="showActionSheet:"/>
+                <relationship kind="action" name="showPicker:"/>
+                <relationship kind="outlet" name="backupCodeLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="backupCodeTextLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="characterCountLabel" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode" candidateClass="UIView"/>
+                <relationship kind="outlet" name="contactCode1" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode2" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode3" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode4" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode5" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode6" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode7" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactCode8" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="contactEmail" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="contactName" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="contactNumber" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="containerImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="mainView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="navItem" candidateClass="UINavigationItem"/>
+                <relationship kind="outlet" name="profileName" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="wtfView" candidateClass="UIView"/>
+            </relationships>
+        </class>
+        <class className="OTBMainViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBMainViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="infoOpen:"/>
+                <relationship kind="action" name="revealUnderRight:"/>
+                <relationship kind="action" name="showActionSheet:"/>
+                <relationship kind="outlet" name="confidentialView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="containerImage" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="containerView" candidateClass="UIView"/>
+                <relationship kind="outlet" name="currentProfile" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="downArrow" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="infoButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="inputPanel" candidateClass="UIView"/>
+                <relationship kind="outlet" name="inputView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="navBar" candidateClass="UINavigationBar"/>
+                <relationship kind="outlet" name="navItem" candidateClass="UINavigationItem"/>
+                <relationship kind="outlet" name="outputButton" candidateClass="UIButton"/>
+                <relationship kind="outlet" name="outputPanel" candidateClass="UIView"/>
+                <relationship kind="outlet" name="outputView" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="tempCode" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="upArrow" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="OTBProfilesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/OTBProfilesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="addButton:"/>
+                <relationship kind="action" name="cancelButton:"/>
+                <relationship kind="outlet" name="navBar" candidateClass="UINavigationBar"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="r5O-sr-en1"/>
+        <segue reference="pvo-ge-YOM"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -26,20 +26,16 @@
 // An empty implementation adversely affects performance during animation.*/
 - (void)drawRect:(CGRect)rect {
     
-    //// Color Declarations
+    // Color Declarations
     UIColor* color2 = [UIColor colorWithRed: 0.657 green: 0 blue: 0 alpha: 1];
     
-    //// Abstracted Attributes
+    // Abstracted Attributes
     NSString* textContent = @"Kryptxt";
     
-    
-    //// Text Drawing
+    // Text Drawing
     CGRect textRect = CGRectMake(0, 0, 129, 59);
     [color2 setFill];
     [textContent drawInRect: textRect withFont: [UIFont fontWithName: @"Capture it" size: 32] lineBreakMode: UILineBreakModeWordWrap alignment: UITextAlignmentCenter];
-    
-    
-
 }
 
 

@@ -121,7 +121,7 @@ BOOL topViewHasFocus;
  
  Set to NO if you don't want to show the empty space behind the top and under view.
  
- By defaut, this is set to YES
+ By default, this is set to YES
  */
 @property (nonatomic, assign) BOOL shouldAllowPanningPastAnchor;
 
@@ -220,6 +220,6 @@ BOOL topViewHasFocus;
 
 /** UIViewController extension */
 @interface UIViewController(SlidingViewExtension)
-/** Convience method for getting access to the ECSlidingViewController instance */
+/** Convenience method for getting access to the ECSlidingViewController instance */
 - (ECSlidingViewController *)slidingViewController;
 @end

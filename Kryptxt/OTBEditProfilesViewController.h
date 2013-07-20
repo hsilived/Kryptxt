@@ -19,7 +19,7 @@
 
 @end
 
-@interface OTBEditProfilesViewController : UIViewController  <UITextFieldDelegate, UIPickerViewDelegate> {
+@interface OTBEditProfilesViewController : UIViewController  <UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource> {
     
     GeneralHelpers* generalHelpers;
     ValidationMethods *validationMethods;
@@ -28,8 +28,10 @@
     
     NSArray *digits;
     NSMutableDictionary *labels;
-    UIPopoverController *popover;
-    IBOutlet UIView *containerPanel;
+    
+    IBOutlet UIView *wtfView;
+    IBOutlet UIView *containerView;
+    IBOutlet UIImageView *containerImage;
     IBOutlet UIView *mainView;
     IBOutlet UITextField *profileName;
     IBOutlet UITextField *contactName;
@@ -46,8 +48,11 @@
     IBOutlet UILabel *contactCode8;
     IBOutlet UILabel *characterCountLabel;
     IBOutlet UINavigationItem *navItem;
+    IBOutlet UILabel *backupCodeLabel;
+    IBOutlet UILabel *backupCodeTextLabel;
     
     NSString *profileCode;
+    NSString *backupCode;
     UIPickerView *codeGen;
     NSMutableString *code;
     NSMutableArray *profiles;
@@ -59,6 +64,10 @@
 @property(weak, nonatomic) id <OTBEditProfilesViewControllerDelegate> delegate;
 
 @property(retain) ProfileDoc *profile;
+
+@property (strong, nonatomic) UIPopoverController *popover;
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
 
 - (IBAction)showActionSheet:(id)sender;
 
@@ -72,10 +81,11 @@
 
 - (void)onDoneCodePicking;
 
-- (void)nextFromCodePicker;
+- (void)optionFromCodePicker:(id)sender;
 
 - (IBAction)closeFirstPicker:(id)sender;
 
 - (void)closePicker;
+- (IBAction)resetCode:(id)sender;
 
 @end

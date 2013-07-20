@@ -3,10 +3,6 @@
 //  Profiles
 //
 
-#import "ProfileDoc.h"
-#import "ProfileData.h"
-#import "ProfileDatabase.h"
-
 #define kDataKey @"Data"
 #define kDataFile @"data.plist"
 //#define kThumbImageFile @"thumbImage.png"

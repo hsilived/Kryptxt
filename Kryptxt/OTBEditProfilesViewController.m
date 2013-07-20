@@ -10,7 +10,7 @@
 
 @implementation OTBEditProfilesViewController
 
-@synthesize profile;
+@synthesize profile, popover;
 
 - (void)viewDidLoad {
 
@@ -19,18 +19,27 @@
 
     generalHelpers = [[GeneralHelpers alloc] init];
     validationMethods = [[ValidationMethods alloc] init];
-    kbHelper = [[KeyboardHelper alloc] initWithViewController:self onDoneSelector:@selector(onDone)];
+    kbHelper = [[KeyboardHelper alloc] initWithViewController:self onDoneSelector:@selector(onDoneEditing)];
     peoplePicker = [[PeoplePicker alloc] initWithViewController:self onDoneSelector:@selector(onDonePicking)];
 
-    [generalHelpers createBackgroundLayerWithView:containerPanel BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:106/255.0 green:127/255.0 blue:147/255.0 alpha:(1.0)]];
+    //setup the gradient behind the center panel
+    UIView *backgroundView = [[UIView alloc] initWithFrame:containerView.frame];
+    backgroundView.backgroundColor = [UIColor whiteColor];
+    [self.view insertSubview:backgroundView belowSubview:containerView];
+    
+    [generalHelpers createBackgroundLayerWithView:backgroundView BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor whiteColor] BorderColor:[UIColor colorWithRed:84/255.0 green:85/255.0 blue:141/255.0 alpha:(1.0)]];
+
 
     [generalHelpers addDesignToView:profileName BorderWidth:1 CornerRadius:5 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
     [generalHelpers addDesignToView:contactName BorderWidth:1 CornerRadius:5 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
     [generalHelpers addDesignToView:contactNumber BorderWidth:1 CornerRadius:5 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
     [generalHelpers addDesignToView:contactEmail BorderWidth:1 CornerRadius:5 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
 
-    pickerDisplayView = [[UIView alloc] initWithFrame:CGRectMake(0, 500, 320, 320)];
-    [self.view insertSubview:pickerDisplayView atIndex:100];
+    if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
+        
+        pickerDisplayView = [[UIView alloc] initWithFrame:CGRectMake(0, 500, 320, 320)];
+        [self.view addSubview:pickerDisplayView];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -42,11 +51,10 @@
     if (profile == nil) {
         
         self.title = @"New Profile";
-        [navItem setTitle:@"New Profile"];
     }
     else {
+        
         self.title = @"Edit Profile";
-        [navItem setTitle:@"Edit Profile"];
 
         profileName.text = profile.data.title;
         characterCountLabel.text = [NSString stringWithFormat:@"%i", profileName.text.length];
@@ -58,16 +66,16 @@
 
         if (![profileCode isEqualToString:@"0"]) {
             
-            NSUInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
+            NSInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
 
-            for (int i = 0; i < numComponents; i++) {
+            for (NSUInteger i = 0; i < numComponents; i++) {
                 
                 UILabel *_contactCode = (UILabel *) [self.view viewWithTag:i + 100];
                 _contactCode.text = [NSString stringWithFormat:@"%@", [profileCode substringWithRange:NSMakeRange(i, 1)]];
                 [code appendFormat:@"%@", [profileCode substringWithRange:NSMakeRange(i, 1)]];
             }
 
-            DLog(@"%@", code);
+            NSLog(@"%@", code);
         }
     }
 
@@ -85,7 +93,7 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     
-    if (textField.tag == 666) {
+    if (textField.tag == 1) {
         
         int textLength = textField.text.length;
 
@@ -94,6 +102,7 @@
             // don't allow change
             return NO;
         }
+
         if (string.length > 0)
             characterCountLabel.text = [NSString stringWithFormat:@"%i", textLength + string.length];
         else
@@ -105,64 +114,80 @@
 
 - (IBAction)showActionSheet:(id)sender {
     
+    [self resignFirstResponder];
+    
+    if (profileCode) {
+        
+        backupCode = profileCode;
+        backupCodeLabel.text = profileCode;
+    }
+
     //setup toolbar above picker
     UIToolbar *barHelper = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 320, 44)];
-    barHelper.barStyle = UIBarStyleBlack;
-    barHelper.tintColor = [UIColor colorWithRed:149 / 255.0 green:78 / 255.0 blue:150 / 255.0 alpha:(0.5)];
-    barHelper.alpha = 1.0;
-    
+
     UISegmentedControl *segPrevNext = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Prev", @"Next", nil]];
     segPrevNext.segmentedControlStyle = UISegmentedControlStyleBar;
     segPrevNext.momentary = YES;
-    [segPrevNext addTarget:self action:@selector(nextFromCodePicker) forControlEvents:UIControlEventValueChanged];
-    segPrevNext.tintColor = [UIColor blackColor];
+    [segPrevNext addTarget:self action:@selector(optionFromCodePicker:) forControlEvents:UIControlEventValueChanged];
+    segPrevNext.tintColor = [UIColor colorWithRed:154/255.0 green:2/255.0 blue:28/255.0 alpha:(1.0)];
     
     UIBarButtonItem *btnExtra = [[UIBarButtonItem alloc] initWithTitle:@"Random Code" style:UIBarButtonItemStyleBordered target:self action:@selector(randomize)];
-    btnExtra.tintColor = [UIColor blackColor];
+    btnExtra.tintColor = [UIColor colorWithRed:154/255.0 green:2/255.0 blue:28/255.0 alpha:(1.0)];
     
     UIBarButtonItem *btnDone = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDoneCodePicking)];
-    btnDone.tintColor = [UIColor blackColor];
+    btnDone.tintColor = [UIColor colorWithRed:154/255.0 green:2/255.0 blue:28/255.0 alpha:(1.0)];
     
-    UIBarButtonItem *seperator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+    UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
     
-    [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], seperator, btnExtra, seperator, btnDone, nil]];
+    [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], separator, btnExtra, separator, btnDone, nil]];
     
     //set prev button to disabled because we are at the top of the page
     [segPrevNext setEnabled:YES forSegmentAtIndex:0];
     [segPrevNext setEnabled:YES forSegmentAtIndex:1];
+        
+    
     
     //create the code spinner picker thingy
     codeGen = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, 0, 0)];
     codeGen.showsSelectionIndicator = NO;
     codeGen.delegate = self;
-    
-    for (int i = 0; i < 8; i++) {
+    codeGen.dataSource = self;
+
+    if (![profileCode isEqualToString:@"0"]) {
         
-        int number = [[profileCode substringWithRange:NSMakeRange(i, 1)] intValue];
-        
-        [codeGen selectRow:number inComponent:i animated:YES];
+        //load the already selected code up on to the wheels
+        for (NSUInteger i = 0; i < 8; i++) {
+            
+            int number = [[profileCode substringWithRange:NSMakeRange(i, 1)] intValue];
+            
+            [codeGen selectRow:number inComponent:i animated:YES];
+        }
+        [codeGen reloadAllComponents];
     }
-    [codeGen reloadAllComponents];
     
     //define the image we want to use for the selector image
     UIImage *selectorImage = [UIImage imageNamed:@"selectionIndicator.png"];
     UIView *customSelector = [[UIImageView alloc] initWithImage:selectorImage];
-    
-    //set the x and y values for where to put the selector image
     customSelector.frame = CGRectMake(codeGen.frame.origin.x, (codeGen.frame.origin.y + (codeGen.bounds.size.height / 2) - 24), codeGen.bounds.size.width, 47);
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         
-        UIView *view = [[UIView alloc] init];
-        [view addSubview:codeGen];
-        [view addSubview:barHelper];
+        [codeGen setFrame:CGRectMake(0, 44, 320, 260)];
 
-        //add the custom selector indicator to the view
-        [view addSubview:customSelector];
+        //UIPickerView *thePickerView = [[UIPickerView alloc] initWithFrame:CGRectMake(0, 44, 320, 216)];
+        CGRect thePickerFrame = codeGen.frame;
+        thePickerFrame.origin.y = barHelper.frame.size.height;
+        [codeGen setFrame:thePickerFrame];
         
+        UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 260)];
+        
+        [view addSubview:barHelper];
+        [view addSubview:codeGen];
+        [view addSubview:customSelector];
+
         UIViewController *vc = [[UIViewController alloc] init];
         [vc setView:view];
-        [vc setContentSizeForViewInPopover:CGSizeMake(320, 260)];
+        [vc setContentSizeForViewInPopover:CGSizeMake(320, 265)];
         
         popover = [[UIPopoverController alloc] initWithContentViewController:vc];
         
@@ -180,13 +205,7 @@
         modalBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, height)];
         modalBackground.backgroundColor = [UIColor blackColor];
         modalBackground.alpha = 0.7;
-        [page insertSubview:modalBackground atIndex:2];
-
-
-//        navBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 20, 320, 44)];
-//        navBackground.backgroundColor = [UIColor blackColor];
-//        navBackground.alpha = 0.7;
-//        [self.navigationController.view.superview insertSubview:navBackground atIndex:20];
+        [page insertSubview:modalBackground atIndex:4];
 
         [self.view endEditing:YES];
 
@@ -220,11 +239,19 @@
     [super touchesBegan:touches withEvent:event];
 }
 
-- (void)nextFromCodePicker {
+- (void)optionFromCodePicker:(id)sender {
 
     [self onDoneCodePicking];
 
-    UITextView *nextObj = (UITextView *) [self.view viewWithTag:1];
+    UISegmentedControl *segmentedControl = (UISegmentedControl *)sender;
+    
+    UITextView *nextObj;
+    
+    if (segmentedControl.selectedSegmentIndex == 0)
+        nextObj = (UITextView *) [self.view viewWithTag:1];
+    else
+        nextObj = (UITextView *) [self.view viewWithTag:2];
+        
     [nextObj becomeFirstResponder];
 }
 
@@ -241,14 +268,42 @@
     [UIView commitAnimations];
 }
 
+- (IBAction)resetCode:(id)sender {
+    
+    if (backupCode) {
+        
+        NSInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
+        
+        for (NSUInteger i = 0; i < numComponents; i++) {
+            
+            UILabel *_contactCode = (UILabel *) [self.view viewWithTag:i + 100];
+            _contactCode.text = [NSString stringWithFormat:@"%@", [backupCode substringWithRange:NSMakeRange(i, 1)]];
+        }
+        
+        NSLog(@"reset Profile Code to %@", backupCode);
+        
+        profileCode = backupCode;
+        backupCodeTextLabel.hidden = YES;
+        backupCodeLabel.hidden = YES;
+        backupCodeLabel.text = @"00000000";
+        backupCode = nil;   
+    }
+}
+
+- (void)onDoneEditing {
+    
+    [self.view endEditing:YES];
+}
+
 - (void)onDoneCodePicking {
 
-    NSUInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
+    NSInteger numComponents = [self numberOfComponentsInPickerView:codeGen];
 
     code = [NSMutableString string];
 
     for (NSUInteger i = 0; i < numComponents; ++i) {
-        NSUInteger selectedRow = [codeGen selectedRowInComponent:i];
+        
+        NSInteger selectedRow = [codeGen selectedRowInComponent:i];
         NSString *title = [self pickerView:codeGen titleForRow:selectedRow forComponent:i];
 
         UILabel *_contactCode = (UILabel *) [self.view viewWithTag:i + 100];
@@ -258,14 +313,22 @@
 
     DLog(@"%@", code);
 
-    profileCode = code;
-
+    if (backupCode && (![backupCode isEqualToString:code])) {
+        
+        backupCodeTextLabel.hidden = NO;
+        backupCodeLabel.hidden = NO;
+        
+        profileCode = code;
+    }
     modalBackground.hidden = YES;
     navBackground.hidden = YES;
 
     [self.view endEditing:YES];
 
-    [self closePicker];
+    if (popover)
+        [popover dismissPopoverAnimated:YES];
+    else
+        [self closePicker];
 }
 
 - (void)onDonePicking {
@@ -280,7 +343,7 @@
 - (void)didReceiveMemoryWarning {
 
     [super didReceiveMemoryWarning];
-    //Dispose of any resources that can be recreated.
+	//Dispose of any resources that can be recreated.
 }
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
@@ -320,16 +383,13 @@
 
     DLog(@"cancel button was clicked");
 
-    //[self.navigationController popViewControllerAnimated:YES];
-    //[self.navigationController dismissModalViewControllerAnimated:YES];
-    //[[self parentViewController] dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (IBAction)saveButton:(id)sender {
 
     if (profileName.text.length == 0) {
-        
+
         [validationMethods validationPopupForObject:profileName withContent:@"Profile needs a name." withView:self.view];
         return;
     }
@@ -339,7 +399,7 @@
 
     if ((profile == nil) || (![profile.data.title.lowercaseString isEqualToString:profileName.text.lowercaseString])) {
          
-        for (int i = 0; i < profiles.count; i++) {
+        for (NSUInteger i = 0; i < profiles.count; i++) {
             
             ProfileDoc *temp = [profiles objectAtIndex:i];
 
@@ -387,9 +447,6 @@
 
     [profile saveData];
 
-    //[self.navigationController popViewControllerAnimated:YES];
-    //[self.navigationController dismissModalViewControllerAnimated:YES];
-    //[[self parentViewController] dismissModalViewControllerAnimated:YES];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -399,6 +456,10 @@
     profileCode = nil;
     characterCountLabel = nil;
     navItem = nil;
+    backupCodeLabel = nil;
+    backupCodeTextLabel = nil;
+    containerImage = nil;
+    wtfView = nil;
     [super viewDidUnload];
 }
 

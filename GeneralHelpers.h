@@ -1,6 +1,6 @@
 //
 //  GeneralHelpers.h
-//  Piggie
+//  Kryptxt
 //
 //  Created by DeviL on 2013-01-19.
 //  Copyright (c) 2013 Orange Think Box. All rights reserved.

@@ -15,7 +15,7 @@
 #pragma mark - System Methods
 #define degreesToRadians(x)(M_PI * x / 180.0)
 
-@synthesize profiles = _profiles;
+@synthesize profiles;
 
 - (void)viewDidLoad {
 
@@ -25,7 +25,12 @@
     generalHelpers = [[GeneralHelpers alloc] init];
     validationMethods = [[ValidationMethods alloc] init];
     
-    [generalHelpers createBackgroundLayerWithView:containerPanel BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor colorWithRed:247/255.0 green:247/255.0 blue:247/255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:106/255.0 green:127/255.0 blue:147/255.0 alpha:(1.0)]];
+    //setup the gradient behind the center panel
+    UIView *backgroundView = [[UIView alloc] initWithFrame:containerView.frame];
+    backgroundView.backgroundColor = [UIColor whiteColor];
+    [self.view insertSubview:backgroundView belowSubview:containerView];
+    
+    [generalHelpers createBackgroundLayerWithView:backgroundView BorderWidth:1 CornerRadius:10 BackgroundColor:[UIColor whiteColor] BorderColor:[UIColor colorWithRed:84/255.0 green:85/255.0 blue:141/255.0 alpha:(1.0)]];
     
     //put border around top panel
     [generalHelpers addDesignToView:inputPanel BorderWidth:1 CornerRadius:10 BorderColor:[UIColor colorWithRed:156/255.0 green:156/255.0 blue:156/255.0 alpha:(1.0)]];
@@ -37,41 +42,27 @@
     //UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"kryptxt-logo-b.png"]];
 
     OTBNavigationTitle *imageView = [[OTBNavigationTitle alloc] initWithFrame:CGRectMake(0, 0, 129, 41)];
-    
-    //navItem.titleView = imageView;
     [navItem setTitleView:imageView];
-    //[[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:228/255.0 green:231/255.0 blue:238/255.0 alpha:1.0]];
-    //[navBar setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
-//    NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                [UIColor colorWithRed:128/255.0 green:0/255.0 blue:0/255.0 alpha:1.0], UITextAttributeTextColor,
-//                                [UIColor whiteColor], UITextAttributeTextShadowColor,
-//                                [NSValue valueWithUIOffset:UIOffsetMake(-1, 0)], UITextAttributeTextShadowOffset,
-//                                nil];
-//    
-//    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
-//    
-    //[self.navigationController setToolbarHidden:NO];
+    //the following is for a page with a Navigation Controller
+    //[self.navigationItem setTitleView:imageView];
     
     [self setupRightMenuButton];
     
     tempCode.font = [UIFont fontWithName:@"Capture it" size:tempCode.font.pointSize];
 
-    // shadowPath, shadowOffset, and rotation is handled by ECSlidingViewController.
-    // You just need to set the opacity, radius, and color.
+    // shadowPath, shadowOffset, and rotation is handled by ECSlidingViewController.  You just need to set the opacity, radius, and color.
     self.view.layer.shadowOpacity = 0.75f;
     self.view.layer.shadowRadius = 10.0f;
     self.view.layer.shadowColor = [UIColor blackColor].CGColor;
     
-    
     if (![self.slidingViewController.underRightViewController isKindOfClass:[OTBProfilesViewController class]]) {
+        
         self.slidingViewController.underRightViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"UnderRight"];
     }
     
     [self.view addGestureRecognizer:self.slidingViewController.panGesture];
     
-    
-    
+
 //    UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
 //    [doubleTap setNumberOfTapsRequired:2];
 //    [self.view addGestureRecognizer:doubleTap];
@@ -80,9 +71,10 @@
 //    [twoFingerDoubleTap setNumberOfTapsRequired:2];
 //    [twoFingerDoubleTap setNumberOfTouchesRequired:2];
 //    [self.view addGestureRecognizer:twoFingerDoubleTap];
-    //[self setupRightMenuButton];
     
-    confidentalView.transform = CGAffineTransformRotate(confidentalView.transform, degreesToRadians(8));
+    [self setupRightMenuButton];
+    
+    confidentialView.transform = CGAffineTransformRotate(confidentialView.transform, degreesToRadians(8));
     [self setupKeyboardToolbar];
     
     [generalHelpers enlargeInfoButton:infoButton];
@@ -91,7 +83,7 @@
 - (void)viewWillAppear:(BOOL)animated {
 
     [super viewWillAppear:animated];
-    NSLog(@"Center will appear");
+    DLog(@"Center will appear");
     
     if (inputView.text.length == 0) {
         
@@ -107,19 +99,19 @@
 - (void)viewDidAppear:(BOOL)animated {
     
     [super viewDidAppear:animated];
-    NSLog(@"Center did appear");
+    DLog(@"Center did appear");
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     
     [super viewWillDisappear:animated];
-    NSLog(@"Center will disappear");
+    DLog(@"Center will disappear");
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     
     [super viewDidDisappear:animated];
-    NSLog(@"Center did disappear");
+    DLog(@"Center did disappear");
 }
 
 - (void)didReceiveMemoryWarning {
@@ -131,8 +123,8 @@
 - (void)viewDidUnload {
 
     [self setTitle:nil];
-    containerPanel = nil;
-    confidentalView = nil;
+    containerView = nil;
+    confidentialView = nil;
     navBar = nil;
     navItem = nil;
     containerImage = nil;
@@ -143,14 +135,14 @@
 
 - (void)loadDefaults {
 
-    _profiles = [ProfileDatabase loadProfileDocs];
+    profiles = [ProfileDatabase loadProfileDocs];
 
     if (self.profileDoc == nil) {
         
         self.profileDoc = [[ProfileDoc alloc] initWithTitle:@"" ProfileCode:@"0" ContactName:@"" ContactNumber:@"" ContactEmail:@"" Selected:NO];
     }
 
-    if (_profiles.count < 1) {
+    if (profiles.count < 1) {
         
         self.profileDoc.data.title = @"Default Profile";
         self.profileDoc.data.profileCode = @"01234567";
@@ -163,13 +155,13 @@
 
 - (void)loadProfileInfo {
 
-    _profiles = [ProfileDatabase loadProfileDocs];
+    profiles = [ProfileDatabase loadProfileDocs];
     profileCode = @"????????";
     tempCode.text = @"";
 
-    for (int i = 0; i < _profiles.count; i++) {
+    for (NSUInteger i = 0; i < profiles.count; i++) {
         
-        ProfileDoc *doc = [_profiles objectAtIndex:i];
+        ProfileDoc *doc = [profiles objectAtIndex:i];
 
         if (doc.data.selected) {
             
@@ -215,7 +207,7 @@
 
     NSMutableArray *code = [NSMutableArray arrayWithCapacity:8];
 
-    for (int x = 0; x < 8; x++) {
+    for (NSUInteger x = 0; x < 8; x++) {
         
         [code addObject:[profileCode substringWithRange:NSMakeRange(x, 1)]];
         DLog(@"code digit %d - %@", x, [code objectAtIndex:x]);
@@ -223,7 +215,7 @@
 
     int direction = [[code objectAtIndex:6] intValue];
 
-    for (int x = 1; x < 6; x++) {
+    for (NSUInteger x = 1; x < 6; x++) {
         
         int shift = [[code objectAtIndex:x] intValue];
 
@@ -261,10 +253,9 @@
     DLog(@"AlphaCode %@", alphaCode);
 
     masterCode = [[NSMutableArray alloc] initWithCapacity:alphaCode.length];
-    for (int i = 0; i < alphaCode.length; i++) {
-        NSString *ichar = [NSString stringWithFormat:@"%c", [alphaCode characterAtIndex:i]];
-        [masterCode addObject:ichar];
-    }
+
+    for (NSUInteger i = 0; i < alphaCode.length; i++)
+        [masterCode addObject:[NSString stringWithFormat:@"%c", [alphaCode characterAtIndex:i]]];
 
     DLog(@"_masterCode count %d", masterCode.count);
 }
@@ -457,7 +448,7 @@
     }
 
     UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-    pasteboard.string = outputView.text;
+    pasteboard.string = [generalHelpers removeCrap:outputView.text];
 }
 
 - (void)PasteFromClipboard {
@@ -523,12 +514,6 @@
 
     DLog(@"the %@ key was pressed", text);
 
-//encrypt the individual letter
-//[self encryptLetter: text];
-
-//ALERT this probably needs to come off when outputting to devices
-//inputView.text = [textView.text stringByAppendingString:text];
-
     return TRUE;
 }
 
@@ -562,7 +547,7 @@
     else if (letter.length > 1) {
         outputView.text = [outputView.text substringWithRange:NSMakeRange(0, outputView.text.length - letter.length)];
 
-        for (int x = 0; x < letter.length; x++)
+        for (NSUInteger x = 0; x < letter.length; x++)
             [self encryptLetter:[letter substringWithRange:NSMakeRange(x, 1)]];
     }
     else {
@@ -584,9 +569,9 @@
     if (string1.length < 1)
         return;
 
-    for (int i = 0; i < string1.length; i++) {
+    for (NSUInteger i = 0; i < string1.length; i++) {
         
-        //get the idividual letter from the string
+        //get the individual letter from the string
         NSString *letter = [NSString stringWithFormat:@"%c", [string1 characterAtIndex:i]];
 
 
@@ -619,7 +604,7 @@
             
             outputView.text = [outputView.text substringWithRange:NSMakeRange(0, outputView.text.length - letter.length)];
 
-            for (int x = 0; x < letter.length; x++)
+            for (NSUInteger x = 0; x < letter.length; x++)
                 [self encryptLetter:[letter substringWithRange:NSMakeRange(x, 1)]];
         }
         else {
@@ -645,22 +630,23 @@
     if (string1.length < 1)
         return;
 
-    for (int i = 0; i < string1.length; i++) {
+    for (NSUInteger i = 0; i < string1.length; i++) {
 
-        //get the idividual letter from the string
-        NSString *ichar = [NSString stringWithFormat:@"%c", [string1 characterAtIndex:i]];
+        //get the individual letter from the string
+        NSString *iChar = [NSString stringWithFormat:@"%c", [string1 characterAtIndex:i]];
 
-        for (int x = 0; x < masterCode.count; x++) {
+        for (NSUInteger x = 0; x < masterCode.count; x++) {
 
             //get the ascii code# for each letter
             int asciiCode = [string1 characterAtIndex:i];
 
             if ((asciiCode > 64 && asciiCode < 91) || (asciiCode > 96 && asciiCode < 123)) {
+
                 NSString *codeChar = [NSString stringWithFormat:@"%@", [masterCode objectAtIndex:x]];
 
-                if ([ichar.lowercaseString isEqualToString:codeChar.lowercaseString]) {
+                if ([iChar.lowercaseString isEqualToString:codeChar.lowercaseString]) {
 
-                    if ([codeChar.lowercaseString isEqualToString:ichar])
+                    if ([codeChar.lowercaseString isEqualToString:iChar])
                         temp = [[alphabet objectAtIndex:x] lowercaseString];
                     else
                         temp = [alphabet objectAtIndex:x];
@@ -669,7 +655,7 @@
                 }
             }
             else
-                temp = ichar;
+                temp = iChar;
         }
 
         result = [NSString stringWithFormat:@"%@%@", result, temp];
@@ -692,11 +678,11 @@
 - (IBAction)infoOpen:(UIButton *)sender {
 
     OTBModalPopup *acSheet = [OTBModalPopup modalPopupWithDelegate:self];
-//	acSheet.dismissAfterwards = YES; // Default: NO
-//	acSheet.shouldDrawShadow = NO;   // Default: YES
+    //acSheet.dismissAfterwards = YES; // Default: NO
+    //acSheet.shouldDrawShadow = NO;   // Default: YES
 
-//NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"View1" owner:self options:nil];
-//UIView* v2 =  [views objectAtIndex:0];
+    //NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"View1" owner:self options:nil];
+    //UIView* v2 =  [views objectAtIndex:0];
 
     NSArray *views = [[NSBundle mainBundle] loadNibNamed:@"View1" owner:self options:nil];
     UIView *v1 = [views objectAtIndex:1];
@@ -719,35 +705,75 @@
     views = [[NSBundle mainBundle] loadNibNamed:@"View1" owner:self options:nil];
     UIView *v8 = [views objectAtIndex:7];
 
-// Put the views inside an NSArray:
+    // Put the views inside an NSArray:
     NSArray *pages = [NSArray arrayWithObjects:v1, v3, v4, v5, v6, v7, v8, nil];
 
     [acSheet setPagesInArray:pages]; // next page
-    [acSheet presentInView:sender.superview.window];
+    [acSheet presentInView:sender.superview];
 }
 
-# pragma mark - slideout methods
+# pragma mark - slide out methods
 
+//-(void)bouncePreviewForDrawerSide:(MMDrawerSide)drawerSide distance:(CGFloat)distance completion:(void(^)(BOOL finished))completion{
+//    
+//    NSParameterAssert(drawerSide != MMDrawerSideNone);
+//    
+//    UIViewController * sideDrawerViewController = [self sideDrawerViewControllerForSide:drawerSide];
+//    
+//    if (sideDrawerViewController == nil || self.openSide != MMDrawerSideNone) {
+//        
+//        if(completion)
+//            completion(NO);
+//
+//        return;
+//    }
+//    else {
+//        
+//        [self prepareToPresentDrawer:drawerSide animated:YES];
+//        
+//        [self updateDrawerVisualStateForDrawerSide:drawerSide percentVisible:1.0];
+//        
+//        [CATransaction begin];
+//        [CATransaction
+//         setCompletionBlock:^{
+//             [sideDrawerViewController endAppearanceTransition];
+//             [sideDrawerViewController beginAppearanceTransition:NO animated:NO];
+//             [sideDrawerViewController endAppearanceTransition];
+//             if(completion){
+//                 completion(YES);
+//             }
+//         }];
+//        
+//        CGFloat modifier = ((drawerSide == MMDrawerSideLeft) ? 1.0 : -1.0);
+//        CAKeyframeAnimation *animation = bounceKeyFrameAnimationForDistanceOnView(distance*modifier, self.centerContainerView);
+//        [self.centerContainerView.layer addAnimation:animation forKey:@"bouncing"];
+//        
+//        [CATransaction commit];
+//    }
+//}
+//
 //- (void)doubleTap:(UITapGestureRecognizer *)gesture {
 //    
-//    [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
+//    [self bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
 //}
 //
 //- (void)twoFingerDoubleTap:(UITapGestureRecognizer *)gesture {
 //    
-//    [self.mm_drawerController bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
+//    [self bouncePreviewForDrawerSide:MMDrawerSideRight completion:nil];
 //}
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
-    if ([segue.identifier isEqualToString:@"jumpToEditProfile"]) {
+    if ([segue.identifier isEqualToString:@"jumpToEditProfile"] || [segue.identifier isEqualToString:@"jumpToEditProfile2"]) {
         
         OTBEditProfilesViewController *controller = segue.destinationViewController;
+        controller.profile = _profileDoc;
+        
+        //the following is for a page with a Navigation Controller
         //UINavigationController *navigationController = segue.destinationViewController;
         //OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
-        //editProfileViewController = [[OTBEditProfilesViewController alloc] init];
-        controller.profile = _profileDoc;
+        //controller.profile = _profileDoc;
     }
 }
 
@@ -760,6 +786,8 @@
     
     MMDrawerBarButtonItem *rightDrawerButton = [[MMDrawerBarButtonItem alloc] initWithTarget:self action:@selector(revealUnderRight:)];
     [navItem setRightBarButtonItem:rightDrawerButton animated:YES];
+    //the following is for a page with a Navigation Controller
+    //[self.navigationItem setRightBarButtonItem:rightDrawerButton animated:YES];
 }
 
 @end

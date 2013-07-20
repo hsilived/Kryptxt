@@ -3,8 +3,6 @@
 //  Profiles
 //
 
-#import "ProfileData.h"
-
 @implementation ProfileData
 @synthesize title, selected, profileCode, contactName, contactNumber, contactEmail;
 

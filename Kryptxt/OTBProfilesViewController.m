@@ -19,12 +19,9 @@
     [self.slidingViewController setAnchorLeftPeekAmount:self.peekLeftAmount];
     self.slidingViewController.underRightWidthLayout = ECVariableRevealWidth;
     
-    //tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
     [tableView setDelegate:self];
     [tableView setDataSource:self];
-    
-    //tableView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"common_bg"]];
-    
+
     self.title = @"Profiles";
 }
 
@@ -46,13 +43,13 @@
 #pragma mark - Table view data source
 
 // Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)_tableView {
 
     return 1;
 }
 
 // Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+- (NSInteger)tableView:(UITableView *)_tableView numberOfRowsInSection:(NSInteger)section {
 
     return profiles.count;
 }
@@ -71,7 +68,7 @@
     cell.textLabel.backgroundColor = [UIColor clearColor];
     
     // Configure the cell.
-    ProfileDoc *doc = [profiles objectAtIndex:indexPath.row];
+    ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
     cell.textLabel.text = doc.data.title;
     cell.imageView.hidden = NO;
 
@@ -85,10 +82,10 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)_tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 
-    ProfileDoc *doc = [profiles objectAtIndex:indexPath.row];
-    editProfileViewController.profile = doc;
+    ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
+    //editProfileViewController.profile = doc;
 
     [self performSegueWithIdentifier:@"EditItem" sender:doc];
 }
@@ -97,9 +94,12 @@
 
     if ([segue.identifier isEqualToString:@"EditItem"]) {
         
-        UINavigationController *navigationController = segue.destinationViewController;
-        OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
+        OTBEditProfilesViewController *controller = segue.destinationViewController;
         controller.profile = sender;
+        
+        //UINavigationController *navigationController = segue.destinationViewController;
+        //OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
+        //editProfileViewController.profile = sender;
         //[segue.destinationViewController editProfileViewController];
     }
 }
@@ -109,9 +109,9 @@
 
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-        ProfileDoc *doc = [profiles objectAtIndex:indexPath.row];
+        ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
         [doc deleteDoc];
-        [profiles removeObjectAtIndex:indexPath.row];
+        [profiles removeObjectAtIndex:(NSUInteger)indexPath.row];
         [_tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
 }
@@ -119,13 +119,13 @@
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)_tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    //some code to make this profile the seleted one
-    ProfileDoc *selectedProfile = [profiles objectAtIndex:indexPath.row];
+
+    //some code to make this profile the selected one
+    ProfileDoc *selectedProfile = [profiles objectAtIndex:(NSUInteger)indexPath.row];
 
     if (!selectedProfile.data.selected) {
         
-        for (int i = 0; i < profiles.count; i++) {
+        for (NSUInteger i = 0; i < profiles.count; i++) {
             
             ProfileDoc *clear = [profiles objectAtIndex:i];
 
@@ -160,14 +160,13 @@
     
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    editProfileViewController = nil;
+    //editProfileViewController = nil;
 }
 
 - (void)viewDidUnload {
+    
     navBar = nil;
-    
     tableView = nil;
-    
     // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
     // For example: self.myOutlet = nil;
 }
@@ -175,7 +174,7 @@
 - (void)dealloc {
 
     profiles = nil;
-    editProfileViewController = nil;
+    //editProfileViewController = nil;
 }
 
 - (IBAction)cancelButton:(id)sender {

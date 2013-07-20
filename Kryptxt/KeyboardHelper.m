@@ -8,8 +8,8 @@
 
 #import "KeyboardHelper.h"
 
-
 @implementation KeyboardHelper
+
 @synthesize textFieldsAndViews, barHelper, barButtonSetAtFirst, barButtonSetAtLast, barButtonSetNormal;
 @synthesize textViewDelegate, textFieldDelegate, selectedTextFieldOrView;
 @synthesize onDoneBlock, onDoneSelector, onExtraSelector, viewController;
@@ -53,14 +53,13 @@ NSString *Prev = @"";
 
 - (id)initWithViewController:(UIViewController *)vc {
 
-    if (!vc.isViewLoaded) {
+    if (!vc.isViewLoaded)
         [NSException raise:@"KeyboardHelperException" format:@"KeyboardHelper Error: View not loaded.\n Initialize keyboard helper in viewDidLoad method."];
-        return nil;
-    }
 
     self = [super init];
 
     if (self) {
+
         enabled = NO;
         self.viewController = vc;
         self.distanceFromKeyBoardTop = 5;
@@ -69,47 +68,51 @@ NSString *Prev = @"";
         self.textFieldsAndViews = [NSMutableArray new];
 
         self.initialFrame = vc.view.frame;
-//self.initialFrame = vc.navigationController.view.frame;
+        //self.initialFrame = vc.navigationController.view.frame;
         statusBarHeight = 0;
 
-        if (![UIApplication sharedApplication].isStatusBarHidden) {
-            CGRect rect = [[UIApplication sharedApplication] statusBarFrame];
-            initialFrame.origin.y -= rect.size.height;
-//initialFrame.size.height += rect.size.height;
-            statusBarHeight = rect.size.height;
-        }
+        DLog(@"initialFrame - %f,%f,%f,%f", vc.view.frame.origin.x, vc.view.frame.origin.y, vc.view.frame.size.width, vc.view.frame.size.height);
+
+//        if (![UIApplication sharedApplication].isStatusBarHidden) {
+//
+//            CGRect rect = [[UIApplication sharedApplication] statusBarFrame];
+//            initialFrame.origin.y -= rect.size.height;
+//            //initialFrame.size.height += rect.size.height;
+//            statusBarHeight = rect.size.height;
+//        }
 
         if (vc.navigationController)
             initialFrame.size.height -= vc.navigationController.toolbar.frame.size.height;
 
+        NSLog(@"initialFrame - %f,%f,%f,%f", initialFrame.origin.x, initialFrame.origin.y, initialFrame.size.width, initialFrame.size.height);
+
         self.barHelper = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, vc.view.bounds.size.width, 44)];
         barHelper.barStyle = UIBarStyleBlackTranslucent;
-        barHelper.tintColor = [UIColor colorWithRed:149 / 255.0 green:78 / 255.0 blue:150 / 255.0 alpha:(0.5)];
+        //barHelper.tintColor = [UIColor colorWithRed:149 / 255.0 green:78 / 255.0 blue:150 / 255.0 alpha:(0.5)];
 
-// segmented control idea was given by Adam Roberts, Managing Director at Enigmatic Flare, 2012
-        self.segPrevNext = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:NSLocalizedString(@"Prev", @"Prev"), NSLocalizedString(@"Next", @"Next"), nil]];
+        // segmented control idea was given by Adam Roberts, Managing Director at Enigmatic Flare, 2012
+        self.segPrevNext = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Prev", @"Next", nil]];
         segPrevNext.segmentedControlStyle = UISegmentedControlStyleBar;
         segPrevNext.momentary = YES;
         [segPrevNext addTarget:self action:@selector(segmentValueChanged:) forControlEvents:UIControlEventValueChanged];
-        segPrevNext.tintColor = [UIColor blackColor];
 
         if (_extraButton != NULL && ![_extraButton isEqualToString:@""]) {
+
             _btnExtra = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%@", _extraButton] style:UIBarButtonItemStyleBordered target:self action:@selector(onExtra:)];
-            _btnExtra.tintColor = [UIColor blackColor];
         }
 
-        UIBarButtonItem *btnDone = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Done", @"Done") style:UIBarButtonItemStyleDone target:self action:@selector(onDone:)];
-        btnDone.tintColor = [UIColor blackColor];
+        UIBarButtonItem *btnDone = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone:)];
 
-        UIBarButtonItem *seperator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
+        UIBarButtonItem *separator = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:NULL];
 
         if (_btnExtra != NULL)
-            [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], seperator, _btnExtra, seperator, btnDone, nil]];
+            [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], separator, _btnExtra, separator, btnDone, nil]];
         else
-            [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], seperator, btnDone, nil]];
+            [barHelper setItems:[NSArray arrayWithObjects:[[UIBarButtonItem alloc] initWithCustomView:segPrevNext], separator, btnDone, nil]];
 
         [self reload];
     }
+
     return self;
 }
 
@@ -117,32 +120,41 @@ NSString *Prev = @"";
 
     [textFieldsAndViews removeAllObjects];
 
-    for (UIView *aview in viewController.view.subviews) {
-        if ([aview isKindOfClass:[UIView class]]) {
-            for (UIView *aview2 in aview.subviews) {
-                if (!aview2.hidden && aview2.alpha && aview2.isUserInteractionEnabled && ([aview2 isKindOfClass:[UITextField class]] || [aview2 isKindOfClass:[UITextView class]])) {
-                    if ([aview2 respondsToSelector:@selector(setInputAccessoryView:)])
-                        [aview2 performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
+    for (UIView *tempView in viewController.view.subviews) {
 
-                    [aview2 performSelector:@selector(setDelegate:) withObject:self];
-                    [textFieldsAndViews addObject:aview2];
+        if ([tempView isKindOfClass:[UIView class]]) {
+
+            for (UIView *tempView2 in tempView.subviews) {
+
+                if (!tempView2.hidden && tempView2.alpha && tempView2.isUserInteractionEnabled && ([tempView2 isKindOfClass:[UITextField class]] || [tempView2 isKindOfClass:[UITextView class]])) {
+
+                    if ([tempView2 respondsToSelector:@selector(setInputAccessoryView:)])
+                        [tempView2 performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
+
+                    [tempView2 performSelector:@selector(setDelegate:) withObject:self];
+                    [textFieldsAndViews addObject:tempView2];
+
+                    DLog(@"Text box - %d", tempView2.tag);
                 }
             }
         }
         else {
-            if (!aview.hidden && aview.alpha && aview.isUserInteractionEnabled && ([aview isKindOfClass:[UITextField class]])) {
-                if ([aview respondsToSelector:@selector(setInputAccessoryView:)])
-                    [aview performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
 
-                [aview performSelector:@selector(setDelegate:) withObject:self];
+            if (!tempView.hidden && tempView.alpha && tempView.isUserInteractionEnabled && ([tempView isKindOfClass:[UITextField class]] || [tempView isKindOfClass:[UITextView class]])) {
 
-                [textFieldsAndViews addObject:aview];
+                if ([tempView respondsToSelector:@selector(setInputAccessoryView:)])
+                    [tempView performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
+
+                [tempView performSelector:@selector(setDelegate:) withObject:self];
+
+                [textFieldsAndViews addObject:tempView];
             }
         }
     }
 
-// order
+    // order
     [textFieldsAndViews sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+
         CGPoint origin1 = [(UIView *) obj1 frame].origin;
         CGPoint origin2 = [(UIView *) obj2 frame].origin;
 
@@ -158,6 +170,7 @@ NSString *Prev = @"";
 - (void)enable {
 
     if (!enabled) {
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
@@ -169,6 +182,7 @@ NSString *Prev = @"";
 - (void)disable {
 
     if (enabled) {
+        
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         enabled = NO;
     }
@@ -177,6 +191,7 @@ NSString *Prev = @"";
 - (void)segmentValueChanged:(UISegmentedControl *)sender {
 
     switch (sender.selectedSegmentIndex) {
+            
         case 0:
             [self onPrev:nil];
             break;
@@ -189,38 +204,44 @@ NSString *Prev = @"";
 }
 
 - (void)updateViewPosition {
-//top of the keyboard
+
+    //top of the keyboard
     float kbTopY = kbRect.origin.y;
 
-//space that is visible between status bar and keyboard + (padding between text box and keyboard top)
+    //space that is visible between status bar and keyboard + (padding between text box and keyboard top)
     float visibleYWithPadding = kbTopY - distanceFromKeyBoardTop - statusBarHeight;
 
-//current text box
+    //current text box
     CGRect txtFrame = selectedTextFieldOrView.frame;
 
-//space between bottom of this textbox and the top of the (keyboard or next text object????)
+    //space between bottom of this textbox and the top of the (keyboard or next text object????)
     float visibleY = visibleYWithPadding - txtFrame.size.height;
 
     CGRect currentFrame = viewController.view.frame;
 
-//DLog(@"currentFrame - %f,%f,%f,%f", currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
+    DLog(@"currentFrame - %f,%f,%f,%f", currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
 
     CGRect newFrame = initialFrame;
 
-//todo need to figure out how to get this value programmitically
+    DLog(@"top of keyboard - %f", kbTopY);
+    DLog(@"space that is visible between status bar and keyboard - %f (%f - %f - %f)", visibleYWithPadding, kbTopY, distanceFromKeyBoardTop, statusBarHeight);
+    DLog(@"space between bottom of this textbox and the top of the (keyboard or next text object????) - %f (%f - %f)", visibleY, visibleYWithPadding, txtFrame.size.height);
+
     int top = selectedTextFieldOrView.frame.origin.y + 74;
 
     DLog(@"top of text box %d - %d", selectedTextFieldOrView.tag, top);
 
     if (top > visibleY) {
+        
         UIInterfaceOrientation orientation = viewController.interfaceOrientation;
 
         if (UIInterfaceOrientationIsPortrait(orientation)) {
+
             float offset = initialFrame.origin.y - currentFrame.origin.y;
             float diff = top - visibleY - offset;
 
-//DLog(@"offset (%f - %f)- %f", initialFrame.origin.y, currentFrame.origin.y, offset);
-//DLog(@"diff (%d - %f - %f)- %f", top, visibleY, offset, diff);
+            DLog(@"offset (%f - %f)- %f", initialFrame.origin.y, currentFrame.origin.y, offset);
+            DLog(@"diff (%d - %f - %f)- %f", top, visibleY, offset, diff);
 
             if (orientation == UIInterfaceOrientationPortraitUpsideDown)
                 newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y + diff, currentFrame.size.width, currentFrame.size.height);
@@ -228,10 +249,13 @@ NSString *Prev = @"";
                 newFrame = CGRectMake(currentFrame.origin.x, currentFrame.origin.y - diff, currentFrame.size.width, currentFrame.size.height);
         }
         else {
+
             if (orientation == UIInterfaceOrientationLandscapeRight) {
+
                 DLog(@"KeyboardHelper: TBD: LandScape Mode");
             }
             else {
+
                 float offset = initialFrame.origin.x - currentFrame.origin.x;
                 float diff = top - visibleY - offset;
                 newFrame = CGRectMake(currentFrame.origin.x - diff + kbRect.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
@@ -240,8 +264,8 @@ NSString *Prev = @"";
         }
     }
 
-//DLog(@"currentFrame - %f,%f,%f,%f", currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
-//DLog(@"newFrame - %f,%f,%f,%f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
+    DLog(@"currentFrame - %f,%f,%f,%f", currentFrame.origin.x, currentFrame.origin.y, currentFrame.size.width, currentFrame.size.height);
+    DLog(@"newFrame - %f,%f,%f,%f", newFrame.origin.x, newFrame.origin.y, newFrame.size.width, newFrame.size.height);
 
     if (!CGRectEqualToRect(newFrame, currentFrame))
         [UIView animateWithDuration:0.3 animations:^(void) {
@@ -256,24 +280,23 @@ NSString *Prev = @"";
 
     id obj = [textFieldsAndViews objectAtIndex:0];
 
-    if ((selectedTextFieldOrView.tag != 0) && (selectedTextFieldOrView.tag == 5) && (![_extraButton isEqualToString:@""])) {
+    if ((selectedTextFieldOrView.tag != 0) && (selectedTextFieldOrView.tag == 5) && (![_extraButton isEqualToString:@""]))
         _btnExtra.enabled = true;
-//self.barHelper.
-    }
-    else {
+    else
         _btnExtra.enabled = false;
-//_btnExtra.title = @"";
-    }
 
     if (obj == selectedTextFieldOrView) {
+
         [segPrevNext setEnabled:NO forSegmentAtIndex:0];
         [segPrevNext setEnabled:YES forSegmentAtIndex:1];
     }
     else if ([textFieldsAndViews lastObject] == selectedTextFieldOrView) {
+
         [segPrevNext setEnabled:NO forSegmentAtIndex:1];
         [segPrevNext setEnabled:YES forSegmentAtIndex:0];
     }
     else {
+
         [segPrevNext setEnabled:YES forSegmentAtIndex:0];
         [segPrevNext setEnabled:YES forSegmentAtIndex:1];
     }
@@ -282,9 +305,10 @@ NSString *Prev = @"";
 - (void)onNext:(id)sender {
 
     if (selectedTextFieldOrView != [textFieldsAndViews lastObject]) {
+
         Prev = @"NO";
 
-        int index = [textFieldsAndViews indexOfObject:selectedTextFieldOrView];
+		 int index = [textFieldsAndViews indexOfObject:selectedTextFieldOrView];
         id nextObj = [textFieldsAndViews objectAtIndex:index + 1];
         [nextObj becomeFirstResponder];
     }
@@ -294,6 +318,7 @@ NSString *Prev = @"";
 - (void)onPrev:(id)sender {
 
     if (selectedTextFieldOrView != [textFieldsAndViews objectAtIndex:0]) {
+
         Prev = @"YES";
 
         int index = [textFieldsAndViews indexOfObject:selectedTextFieldOrView];
@@ -303,14 +328,14 @@ NSString *Prev = @"";
 }
 
 - (void)onExtra:(id)sender {
-//[selectedTextFieldOrView resignFirstResponder];
 
     if (self.onExtraSelector) {
+
         if ([viewController respondsToSelector:onExtraSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             [viewController performSelector:onExtraSelector];
-#pragma clang diagnostic pop
+            #pragma clang diagnostic pop
 
         }
     }
@@ -321,13 +346,16 @@ NSString *Prev = @"";
     [selectedTextFieldOrView resignFirstResponder];
 
     if (self.onDoneSelector) {
+
         if ([viewController respondsToSelector:onDoneSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             [viewController performSelector:onDoneSelector];
-#pragma clang diagnostic pop
+            #pragma clang diagnostic pop
         }
-    } else if (self.onDoneBlock) {
+    }
+    else if (self.onDoneBlock) {
         onDoneBlock();
     }
 }

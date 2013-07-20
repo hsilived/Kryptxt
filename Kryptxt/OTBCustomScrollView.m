@@ -13,8 +13,9 @@
 - (id)initWithFrame:(CGRect)frame {
 
     self = [super initWithFrame:frame];
+    
     if (self) {
-// Initialization code
+        // Initialization code
     }
     return self;
 }
@@ -33,9 +34,9 @@
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
-    if (!self.dragging) {
+    if (!self.dragging)
         [[self nextResponder] touchesEnded:touches withEvent:event];
-    }
+    
     [super touchesEnded:touches withEvent:event];
 }
 

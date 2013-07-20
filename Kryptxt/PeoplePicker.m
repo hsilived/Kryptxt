@@ -1,6 +1,6 @@
 //
 //  PeoplePicker.m
-//  Piggie
+//  Kryptxt
 //
 //  Created by DeviL on 2013-01-01.
 //  Copyright (c) 2013 Orange Think Box. All rights reserved.
@@ -31,10 +31,8 @@
 
 - (id)initWithViewController:(UIViewController *)vc {
 
-    if (!vc.isViewLoaded) {
+    if (!vc.isViewLoaded)
         [NSException raise:@"PeoplePickerException" format:@"PeoplePicker Error: View not loaded.\n Initialize PeoplePicker helper in viewDidLoad method."];
-        return nil;
-    }
 
     self = [super init];
 
@@ -71,16 +69,20 @@
     ABMutableMultiValueRef phones;
     phones = ABRecordCopyValue(person, kABPersonPhoneProperty);
     if (phones == nil || ABMultiValueGetCount(phones) == 0) {
+
         CFArrayRef linkedContacts = ABPersonCopyArrayOfAllLinkedPeople(person);
         phones = ABMultiValueCreateMutable(kABPersonPhoneProperty);
         ABMultiValueRef linkedPhones;
+
         for (int i = 0; i < CFArrayGetCount(linkedContacts); i++) {
+
             ABRecordRef linkedContact = CFArrayGetValueAtIndex(linkedContacts, i);
             linkedPhones = ABRecordCopyValue(linkedContact, kABPersonPhoneProperty);
+
             if (linkedPhones != nil && ABMultiValueGetCount(linkedPhones) > 0) {
-                for (int j = 0; j < ABMultiValueGetCount(linkedPhones); j++) {
+
+                for (int j = 0; j < ABMultiValueGetCount(linkedPhones); j++)
                     ABMultiValueAddValueAndLabel(phones, ABMultiValueCopyValueAtIndex(linkedPhones, j), ABMultiValueCopyLabelAtIndex(linkedPhones, j), NULL);
-                }
             }
             CFRelease(linkedPhones);
         }
@@ -99,8 +101,9 @@
     NSString *mobileLabel;
 
     for (int i = 0; i < ABMultiValueGetCount(phones); i++) {
-//NSString *phone = (NSString *)ABMultiValueCopyValueAtIndex(phones, i);
-//DLog(@"%@", phone);
+
+        //NSString *phone = (NSString *)ABMultiValueCopyValueAtIndex(phones, i);
+        //DLog(@"%@", phone);
         mobileLabel = (__bridge NSString *) ABMultiValueCopyLabelAtIndex(phones, i);
 
         if ([mobileLabel isEqualToString:(NSString *) kABPersonPhoneMobileLabel])
@@ -157,18 +160,19 @@
     if (accessGranted) {
         NSString *name = (__bridge_transfer NSString *) ABRecordCopyValue(person, kABPersonFirstNameProperty);
 
-//ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
-//NSString *mobilephone1 = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phoneNumbers, 0);
+        //ABMultiValueRef phoneNumbers = ABRecordCopyValue(person, kABPersonPhoneProperty);
+        //NSString *mobilePhone1 = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phoneNumbers, 0);
 
-//ABMultiValueRef phone2 = ABRecordCopyValue(person, kABPersonPhoneProperty);
-//NSString *mobilephone = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phone2, 0);
-//DLog(@"mobile - %@", mobilephone);
+        //ABMultiValueRef phone2 = ABRecordCopyValue(person, kABPersonPhoneProperty);
+        //NSString *mobilePhone = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phone2, 0);
+        //DLog(@"mobile - %@", mobilePhone);
 
         ABMultiValueRef phones = (ABMultiValueRef) ABRecordCopyValue(person, kABPersonPhoneProperty);
         NSString *mobile = @"[None]";
         NSString *mobileLabel;
 
         for (int i = 0; i < ABMultiValueGetCount(phones); i++) {
+
             mobileLabel = (__bridge NSString *) ABMultiValueCopyLabelAtIndex(phones, i);
 
             if ([mobileLabel isEqualToString:(NSString *) kABPersonPhoneMobileLabel])
@@ -191,11 +195,13 @@
 - (void)onDone {
 
     if (self.onDoneSelector) {
+
         if ([_viewController respondsToSelector:_onDoneSelector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             [_viewController performSelector:_onDoneSelector];
-#pragma clang diagnostic pop
+            #pragma clang diagnostic pop
         }
     }
     else if (self.onDoneBlock) {

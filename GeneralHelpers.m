@@ -1,6 +1,6 @@
 //
 //  GeneralHelpers.m
-//  Piggie
+//  Kryptxt
 //
 //  Created by DeviL on 2013-01-19.
 //  Copyright (c) 2013 Orange Think Box. All rights reserved.
@@ -14,7 +14,7 @@
 
 - (void)createBackgroundLayerWithView:(UIView *)view {
 
-    [self addDesignToView:(UIView *)view BorderWidth:2 CornerRadius:23 BackgroundColor:[UIColor colorWithRed:240 / 255.0 green:240 / 255.0 blue:240 / 255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:250 / 255.0 green:250 / 255.0 blue:250 / 255.0 alpha:(1.0)]];
+    [self addDesignToView:view BorderWidth:2 CornerRadius:23 BackgroundColor:[UIColor colorWithRed:240 / 255.0 green:240 / 255.0 blue:240 / 255.0 alpha:(1.0)] BorderColor:[UIColor colorWithRed:250 / 255.0 green:250 / 255.0 blue:250 / 255.0 alpha:(1.0)]];
 }
 
 - (void)createBackgroundLayerWithView:(UIView *)view BorderWidth:(int)bw CornerRadius:(int)cr BackgroundColor:(UIColor *)bkc BorderColor:(UIColor *)bc {
@@ -28,8 +28,32 @@
     view.layer.shadowOffset = CGSizeMake(0, 0);
     //view.layer.shadowOffset = CGSizeMake(-10, 0.0);
     view.layer.shadowColor = [[UIColor colorWithRed:50 / 255.0 green:50 / 255.0 blue:150 / 255.0 alpha:(0.9)] CGColor];
-    view.layer.masksToBounds = YES;
+    view.layer.masksToBounds = NO;
     view.layer.shadowOpacity = 0.5;
+    
+    UIBezierPath *shapePath = [UIBezierPath bezierPathWithRoundedRect:view.bounds byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(10.0, 10.0)];
+    
+    //the colors for the gradient.  highColor is at the top, lowColor as at the bottom
+    UIColor *highColor = [UIColor colorWithWhite:255.000 alpha:0.2];
+    UIColor *midColor = [UIColor colorWithRed:229/255.0 green:228/255.0 blue:208/255.0 alpha:0.2];
+    UIColor *lowColor = [UIColor colorWithRed:211/255.0 green:209/255.0 blue:175/255.0 alpha:0.2];
+    CAGradientLayer *gradient = [CAGradientLayer layer];
+    gradient.colors = [NSArray arrayWithObjects:(id) [lowColor CGColor], [lowColor CGColor], (id) [midColor CGColor], (id) [highColor CGColor], (id) [highColor CGColor], (id) [highColor CGColor], (id) [midColor CGColor], [lowColor CGColor], nil];
+    gradient.frame = view.bounds;
+    gradient.needsDisplayOnBoundsChange = YES;
+    
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    maskLayer.fillRule = kCAFillRuleEvenOdd;
+    maskLayer.path = shapePath.CGPath;
+    
+    CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+    shapeLayer.frame = view.bounds;
+    
+    [shapeLayer addSublayer:gradient];
+    [gradient setMask:maskLayer];
+    [gradient setNeedsDisplay];
+    
+    [view.layer addSublayer:shapeLayer];
 }
 
 #pragma mark - NSString Methods
@@ -45,7 +69,7 @@
 #pragma mark - TextView Methods
 
 
-//center text in a textview
+//center text in a text view
 
 //add the following in .h
 //#import "GeneralHelpers.h"
@@ -82,6 +106,7 @@
     UILabel *titleView = (UILabel *) vc.navigationItem.titleView;
 
     if (!titleView) {
+
         titleView = [[UILabel alloc] initWithFrame:CGRectZero];
         titleView.backgroundColor = [UIColor clearColor];
         titleView.font = [UIFont boldSystemFontOfSize:20.0];
@@ -122,7 +147,8 @@
 #pragma mark - Info Button
 
 - (void)enlargeInfoButton:(UIButton *)infoButton {
-    //update info button to give more clikable space
+
+    //update info button to give more clickable space
     CGRect infoRect = CGRectMake(infoButton.frame.origin.x - 20, infoButton.frame.origin.y - 20, infoButton.frame.size.width + 40, infoButton.frame.size.height + 40);
     infoButton.frame = infoRect;
     //infoButton.layer.borderColor = [[UIColor greenColor] CGColor];

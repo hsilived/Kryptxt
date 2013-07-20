@@ -21,28 +21,35 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "OTBCustomScrollView.h"
+#import "CloseButton.h"
 
 @protocol OTBModalPopupDelegate;
 
-@interface OTBModalPopup : UIView <UIScrollViewDelegate>
+@interface OTBModalPopup : UIView <UIScrollViewDelegate> {
+    
+    CloseButton *closeButton;
+    float pageHeight;
+    UIPageControl *pageControl;
+    OTBCustomScrollView *pageScroll;
+}
 
 @property(nonatomic, assign) id <OTBModalPopupDelegate> delegate;
-@property(nonatomic, strong) OTBCustomScrollView *pageScroll;
-@property(nonatomic, strong) UIPageControl *pageControl;
 @property(nonatomic) BOOL shouldDrawShadow; // YES
-@property(nonatomic) float pageHeight;
 
 + (id)modalPopupWithDelegate:(id <OTBModalPopupDelegate>)dlg;
 
 - (void)setPagesInArray:(NSArray *)pages;
 
-- (void)presentInView:(UIView *)parentview;
+- (void)presentInView:(UIView *)parentView;
 
 - (void)dismiss;
+
 @end
 
 @protocol OTBModalPopupDelegate <NSObject>
 
 @optional
+
 - (void)modalPopupFinished:(OTBModalPopup *)ac;
+
 @end

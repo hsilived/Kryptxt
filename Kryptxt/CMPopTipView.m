@@ -141,9 +141,7 @@
     CGGradientRef myGradient;
     CGColorSpaceRef myColorSpace;
     size_t locationCount = 5;
-    CGFloat locationList[] = {
-            0.0, bubbleMiddle - 0.03, bubbleMiddle, bubbleMiddle + 0.03, 1.0
-    };
+    CGFloat locationList[] = {0.0, bubbleMiddle - 0.03, bubbleMiddle, bubbleMiddle + 0.03, 1.0};
 
     CGFloat colourHL = 0.0;
 

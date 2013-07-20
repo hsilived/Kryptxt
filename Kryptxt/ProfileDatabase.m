@@ -3,9 +3,6 @@
 //  Profiles
 //
 
-#import "ProfileDatabase.h"
-#import "ProfileDoc.h"
-
 @implementation ProfileDatabase
 
 + (NSString *)getPrivateDocsDir {
@@ -37,18 +34,19 @@
     }
 
     // Create ProfileDoc for each file
-    NSMutableArray *retval = [NSMutableArray arrayWithCapacity:files.count];
+    NSMutableArray *returningProfiles = [NSMutableArray arrayWithCapacity:files.count];
+
     for (NSString *file in files) {
         
         if ([file.pathExtension compare:@"Profile" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
             
             NSString *fullPath = [documentsDirectory stringByAppendingPathComponent:file];
             ProfileDoc *doc = [[ProfileDoc alloc] initWithDocPath:fullPath];
-            [retval addObject:doc];
+            [returningProfiles addObject:doc];
         }
     }
 
-    return retval;
+    return returningProfiles;
 }
 
 + (NSString *)nextProfileDocPath {

@@ -6,8 +6,6 @@
 #import <UIKit/UIKit.h>
 #import "OTBEditProfilesViewController.h"
 #import "ECSlidingViewController.h"
-//#import "UIViewController+MMDrawerController.h"
-//#import "OTBMainViewController.h"
 
 @class Profiles;
 
@@ -15,7 +13,7 @@
     
     //OTBMainViewController *main;
     IBOutlet UITableView *tableView;
-    OTBEditProfilesViewController *editProfileViewController;
+    //OTBEditProfilesViewController *editProfileViewController;
     IBOutlet UINavigationBar *navBar;
 }
 

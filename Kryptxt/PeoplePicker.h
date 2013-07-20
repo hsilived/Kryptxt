@@ -1,6 +1,6 @@
 //
 //  PeoplePicker.h
-//  Piggie
+//  Kryptxt
 //
 //  Created by DeviL on 2013-01-01.
 //  Copyright (c) 2013 Orange Think Box. All rights reserved.
