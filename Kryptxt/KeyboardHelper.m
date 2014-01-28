@@ -10,11 +10,7 @@
 
 @implementation KeyboardHelper
 
-@synthesize textFieldsAndViews, barHelper, barButtonSetAtFirst, barButtonSetAtLast, barButtonSetNormal;
-@synthesize textViewDelegate, textFieldDelegate, selectedTextFieldOrView;
-@synthesize onDoneBlock, onDoneSelector, onExtraSelector, viewController;
-@synthesize initialFrame, kbRect, distanceFromKeyBoardTop, shouldSelectNextOnEnter;
-@synthesize segPrevNext;
+@synthesize textViewDelegate, textFieldDelegate, segPrevNext;
 
 NSString *Prev = @"";
 
@@ -23,7 +19,7 @@ NSString *Prev = @"";
     self = [self initWithViewController:vc];
 
     if (self)
-        self.onDoneSelector = done;
+        onDoneSelector = done;
 
     return self;
 }
@@ -31,9 +27,10 @@ NSString *Prev = @"";
 - (id)initWithViewController:(UIViewController *)vc onDoneSelector:(SEL)done extraButton:(NSString *)extraText onExtraSelector:(SEL)extra {
 
     if (self) {
-        self.extraButton = extraText;
-        self.onDoneSelector = done;
-        self.onExtraSelector = extra;
+        
+        extraButton = extraText;
+        onDoneSelector = done;
+        onExtraSelector = extra;
     }
 
     self = [self initWithViewController:vc];
@@ -46,7 +43,7 @@ NSString *Prev = @"";
     self = [self initWithViewController:vc];
 
     if (self)
-        self.onDoneBlock = onDone;
+        onDoneBlock = onDone;
 
     return self;
 }
@@ -61,13 +58,13 @@ NSString *Prev = @"";
     if (self) {
 
         enabled = NO;
-        self.viewController = vc;
-        self.distanceFromKeyBoardTop = 5;
-        self.shouldSelectNextOnEnter = YES;
+        viewController = vc;
+        distanceFromKeyBoardTop = 5;
+        shouldSelectNextOnEnter = YES;
 
-        self.textFieldsAndViews = [NSMutableArray new];
+        textFieldsAndViews = [NSMutableArray new];
 
-        self.initialFrame = vc.view.frame;
+        initialFrame = vc.view.frame;
         //self.initialFrame = vc.navigationController.view.frame;
         statusBarHeight = 0;
 
@@ -84,11 +81,10 @@ NSString *Prev = @"";
         if (vc.navigationController)
             initialFrame.size.height -= vc.navigationController.toolbar.frame.size.height;
 
-        NSLog(@"initialFrame - %f,%f,%f,%f", initialFrame.origin.x, initialFrame.origin.y, initialFrame.size.width, initialFrame.size.height);
+        //NSLog(@"initialFrame - %f,%f,%f,%f", initialFrame.origin.x, initialFrame.origin.y, initialFrame.size.width, initialFrame.size.height);
 
-        self.barHelper = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, vc.view.bounds.size.width, 44)];
+        barHelper = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, vc.view.bounds.size.width, 44)];
         barHelper.barStyle = UIBarStyleBlackTranslucent;
-        //barHelper.tintColor = [UIColor colorWithRed:149 / 255.0 green:78 / 255.0 blue:150 / 255.0 alpha:(0.5)];
 
         // segmented control idea was given by Adam Roberts, Managing Director at Enigmatic Flare, 2012
         self.segPrevNext = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObjects:@"Prev", @"Next", nil]];
@@ -96,9 +92,9 @@ NSString *Prev = @"";
         segPrevNext.momentary = YES;
         [segPrevNext addTarget:self action:@selector(segmentValueChanged:) forControlEvents:UIControlEventValueChanged];
 
-        if (_extraButton != NULL && ![_extraButton isEqualToString:@""]) {
+        if (extraButton != NULL && ![extraButton isEqualToString:@""]) {
 
-            _btnExtra = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%@", _extraButton] style:UIBarButtonItemStyleBordered target:self action:@selector(onExtra:)];
+            _btnExtra = [[UIBarButtonItem alloc] initWithTitle:[NSString stringWithFormat:@"%@", extraButton] style:UIBarButtonItemStyleBordered target:self action:@selector(onExtra:)];
         }
 
         UIBarButtonItem *btnDone = [[UIBarButtonItem alloc] initWithTitle:@"Done" style:UIBarButtonItemStyleDone target:self action:@selector(onDone:)];
@@ -129,7 +125,7 @@ NSString *Prev = @"";
                 if (!tempView2.hidden && tempView2.alpha && tempView2.isUserInteractionEnabled && ([tempView2 isKindOfClass:[UITextField class]] || [tempView2 isKindOfClass:[UITextView class]])) {
 
                     if ([tempView2 respondsToSelector:@selector(setInputAccessoryView:)])
-                        [tempView2 performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
+                        [tempView2 performSelector:@selector(setInputAccessoryView:) withObject:barHelper];
 
                     [tempView2 performSelector:@selector(setDelegate:) withObject:self];
                     [textFieldsAndViews addObject:tempView2];
@@ -143,7 +139,7 @@ NSString *Prev = @"";
             if (!tempView.hidden && tempView.alpha && tempView.isUserInteractionEnabled && ([tempView isKindOfClass:[UITextField class]] || [tempView isKindOfClass:[UITextView class]])) {
 
                 if ([tempView respondsToSelector:@selector(setInputAccessoryView:)])
-                    [tempView performSelector:@selector(setInputAccessoryView:) withObject:self.barHelper];
+                    [tempView performSelector:@selector(setInputAccessoryView:) withObject:barHelper];
 
                 [tempView performSelector:@selector(setDelegate:) withObject:self];
 
@@ -275,12 +271,12 @@ NSString *Prev = @"";
 
 - (void)updateBarHelper {
 
-    if (!CGRectIsEmpty(self.kbRect))
+    if (!CGRectIsEmpty(kbRect))
         [self updateViewPosition];
 
     id obj = [textFieldsAndViews objectAtIndex:0];
 
-    if ((selectedTextFieldOrView.tag != 0) && (selectedTextFieldOrView.tag == 5) && (![_extraButton isEqualToString:@""]))
+    if ((selectedTextFieldOrView.tag != 0) && (selectedTextFieldOrView.tag == 5) && (![extraButton isEqualToString:@""]))
         _btnExtra.enabled = true;
     else
         _btnExtra.enabled = false;
@@ -329,7 +325,7 @@ NSString *Prev = @"";
 
 - (void)onExtra:(id)sender {
 
-    if (self.onExtraSelector) {
+    if (onExtraSelector) {
 
         if ([viewController respondsToSelector:onExtraSelector]) {
             #pragma clang diagnostic push
@@ -345,7 +341,7 @@ NSString *Prev = @"";
 
     [selectedTextFieldOrView resignFirstResponder];
 
-    if (self.onDoneSelector) {
+    if (onDoneSelector) {
 
         if ([viewController respondsToSelector:onDoneSelector]) {
 
@@ -355,7 +351,7 @@ NSString *Prev = @"";
             #pragma clang diagnostic pop
         }
     }
-    else if (self.onDoneBlock) {
+    else if (onDoneBlock) {
         onDoneBlock();
     }
 }
@@ -364,7 +360,7 @@ NSString *Prev = @"";
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
 
-    self.selectedTextFieldOrView = textField;
+    selectedTextFieldOrView = textField;
     [self updateBarHelper];
 
     if (self.textFieldDelegate && [textFieldDelegate respondsToSelector:@selector(textFieldShouldBeginEditing:)])
@@ -422,7 +418,7 @@ NSString *Prev = @"";
 
 - (BOOL)textViewShouldBeginEditing:(UITextView *)textView {
 
-    self.selectedTextFieldOrView = textView;
+    selectedTextFieldOrView = textView;
     [self updateBarHelper];
 
     if (self.textViewDelegate && [textViewDelegate respondsToSelector:@selector(textViewShouldBeginEditing:)])
@@ -475,14 +471,14 @@ NSString *Prev = @"";
 
 - (void)keyboardWillShow:(NSNotification *)notify {
 
-    self.kbRect = [(NSValue *) [notify.userInfo valueForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
+    kbRect = [(NSValue *) [notify.userInfo valueForKey:@"UIKeyboardFrameEndUserInfoKey"] CGRectValue];
     [self updateViewPosition];
 }
 
 - (void)keyboardWillHide:(NSNotification *)notify {
 
     [UIView animateWithDuration:0.25 animations:^(void) {
-        self.viewController.view.frame = initialFrame;
+        viewController.view.frame = initialFrame;
     }];
 }
 @end

@@ -4,30 +4,36 @@
 //
 
 @implementation ProfileData
-@synthesize title, selected, profileCode, contactName, contactNumber, contactEmail;
 
-- (id)initWithTitle:(NSString *)_title ProfileCode:(NSString *)_profileCode ContactName:(NSString *)_contactName ContactNumber:(NSString *)_contactNumber ContactEmail:(NSString *)_contactEmail Selected:(BOOL)_selected {
+@synthesize profileAlias, profileCode, profileName, profileNumber, profileEmail, profileSelected;
+
+- (id)initWithProfileAlias:(NSString *)_profileAlias ProfileCode:(NSString *)_profileCode ProfileName:(NSString *)_profileName ProfileNumber:(NSString *)_profileNumber ProfileEmail:(NSString *)_profileEmail ProfileSelected:(BOOL)_profileSelected {
 
     if ((self = [super init])) {
         
-        title = [_title copy];
+        profileAlias = [_profileAlias copy];
         profileCode = [_profileCode copy];
-        contactName = [_contactName copy];
-        contactNumber = [_contactNumber copy];
-        contactEmail = [_contactEmail copy];
-        selected = _selected;
+        profileName = [_profileName copy];
+        profileNumber = [_profileNumber copy];
+        profileEmail = [_profileEmail copy];
+        profileSelected = _profileSelected;
     }
     return self;
 }
 
 - (void)toggleSelected {
 
-    selected = !selected;
+    profileSelected = !profileSelected;
 }
 
 - (void)dealloc {
 
-    title = nil;
+    profileAlias = nil;
+    profileCode = nil;
+    profileName = nil;
+    profileNumber = nil;
+    profileEmail = nil;
+    profileSelected = nil;
     //[super dealloc];
 }
 
@@ -35,24 +41,24 @@
 
 - (void)encodeWithCoder:(NSCoder *)encoder {
 
-    [encoder encodeObject:title forKey:@"Title"];
+    [encoder encodeObject:profileAlias forKey:@"ProfileAlias"];
     [encoder encodeObject:profileCode forKey:@"ProfileCode"];
-    [encoder encodeObject:contactName forKey:@"ContactName"];
-    [encoder encodeObject:contactNumber forKey:@"ContactNumber"];
-    [encoder encodeObject:contactEmail forKey:@"ContactEmail"];
-    [encoder encodeBool:selected forKey:@"Selected"];
+    [encoder encodeObject:profileName forKey:@"ProfileName"];
+    [encoder encodeObject:profileNumber forKey:@"ProfileNumber"];
+    [encoder encodeObject:profileEmail forKey:@"ProfileEmail"];
+    [encoder encodeBool:profileSelected forKey:@"ProfileSelected"];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 
-    NSString *_title = [decoder decodeObjectForKey:@"Title"];
+    NSString *_profileAlias = [decoder decodeObjectForKey:@"ProfileAlias"];
     NSString *_profileCode = [decoder decodeObjectForKey:@"ProfileCode"];
-    NSString *_contactName = [decoder decodeObjectForKey:@"ContactName"];
-    NSString *_contactNumber = [decoder decodeObjectForKey:@"ContactNumber"];
-    NSString *_contactEmail = [decoder decodeObjectForKey:@"ContactEmail"];
-    BOOL _selected = [decoder decodeBoolForKey:@"Selected"];
+    NSString *_profileName = [decoder decodeObjectForKey:@"ProfileName"];
+    NSString *_profileNumber = [decoder decodeObjectForKey:@"ProfileNumber"];
+    NSString *_profileEmail = [decoder decodeObjectForKey:@"ProfileEmail"];
+    BOOL _profileSelected = [decoder decodeBoolForKey:@"ProfileSelected"];
     
-    return [self initWithTitle:_title ProfileCode:_profileCode ContactName:_contactName ContactNumber:_contactNumber ContactEmail:_contactEmail Selected:_selected];
+    return [self initWithProfileAlias:_profileAlias ProfileCode:_profileCode ProfileName:_profileName ProfileNumber:_profileNumber ProfileEmail:_profileEmail ProfileSelected:_profileSelected];
 }
 
 @end

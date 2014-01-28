@@ -15,8 +15,9 @@
 @property(nonatomic, retain) NSMutableArray *visiblePopTipViews;
 @property(nonatomic, retain) id currentPopTipViewTarget;
 
+- (void) validationPopupForBarButtonItem:(UIBarButtonItem *)barButtonItem withContent:(NSString *)content;
 - (void)validationPopupForObject:(id)someObject withContent:(NSString *)content withView:(UIView *)view;
-
+- (void)validationPopupForBarButtonItem:(UIBarButtonItem *)barButtonItem withContent:(NSString *)content withContainerView:(UIView*)containerView;
 - (void)dismissAllPopTipViews;
 
 @end

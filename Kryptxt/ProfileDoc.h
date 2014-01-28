@@ -18,7 +18,7 @@
 
 - (id)initWithDocPath:(NSString *)docPath;
 
-- (id)initWithTitle:(NSString *)title ProfileCode:(NSString *)profileCode ContactName:contactName ContactNumber:contactNumber ContactEmail:(NSString *)contactEmail Selected:(BOOL)selected;
+- (id)initWithProfileAlias:(NSString *)title ProfileCode:(NSString *)profileCode ProfileName:(NSString *)profileName ProfileNumber:(NSString *)profileNumber ProfileEmail:(NSString *)profileEmail ProfileSelected:(BOOL)profileSelected;
 
 - (void)saveData;
 

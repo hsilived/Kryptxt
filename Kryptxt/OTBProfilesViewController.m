@@ -4,8 +4,12 @@
 //
 
 #import "OTBProfilesViewController.h"
+#import "OTBIAPHelper.h"
+#import <StoreKit/StoreKit.h>
 
 @implementation OTBProfilesViewController
+
+#define IS_IPAD UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad
 
 @synthesize peekLeftAmount, profiles;
 
@@ -15,14 +19,24 @@
 
     [super viewDidLoad];
 
+    appModel = [AppModel sharedManager];
+    
     self.peekLeftAmount = 40.0f;
     [self.slidingViewController setAnchorLeftPeekAmount:self.peekLeftAmount];
     self.slidingViewController.underRightWidthLayout = ECVariableRevealWidth;
     
     [tableView setDelegate:self];
     [tableView setDataSource:self];
-
-    self.title = @"Profiles";
+    
+    [self setupCloseButton];
+    [self setupAddButton];
+    
+    [appModel loadProducts];
+    
+    //add the logo image to the navigation bar
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"kryptxt-profiles-title"]];
+    [navItem setTitleView:imageView];
+    //self.title = @"Profiles";
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -32,6 +46,29 @@
     profiles = [ProfileDatabase loadProfileDocs];
 
     [tableView reloadData];
+}
+
+#pragma mark - Memory management
+
+- (void)didReceiveMemoryWarning {
+    
+    // Releases the view if it doesn't have a superview.
+    [super didReceiveMemoryWarning];
+    //editProfileViewController = nil;
+}
+
+- (void)viewDidUnload {
+    
+    navBar = nil;
+    tableView = nil;
+    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
+    // For example: self.myOutlet = nil;
+}
+
+- (void)dealloc {
+    
+    profiles = nil;
+    //editProfileViewController = nil;
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -57,50 +94,41 @@
 // Customize the appearance of table view cells.
 - (UITableViewCell *)tableView:(UITableView *)_tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
-    static NSString *CellIdentifier = @"Cell";
-
-    UITableViewCell *cell = [_tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-
+    TagCell *cell = (TagCell *) [_tableView dequeueReusableCellWithIdentifier:@"ProfileCell"];
+    
     if (cell == nil)
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-
-    cell.textLabel.font = [UIFont systemFontOfSize:24.0];
-    cell.textLabel.backgroundColor = [UIColor clearColor];
+        cell = [[TagCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"ProfileCell"];
+    
+    cell.profileLabel.font = [UIFont fontWithName:@"Helvetica Neue" size:IS_IPAD?48:24.0];
+    cell.profileLabel.backgroundColor = [UIColor clearColor];
     
     // Configure the cell.
     ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
-    cell.textLabel.text = doc.data.title;
+    cell.profileLabel.text = doc.data.profileAlias;
     cell.imageView.hidden = NO;
 
-    if (!doc.data.selected)
-        cell.imageView.image = [UIImage imageNamed:@"checkmark2.png"];
-    else
-        cell.imageView.image = [UIImage imageNamed:@"checkmark.png"];
-
-    cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-
+    cell.profileSelected.hidden = !doc.data.profileSelected;
+    
     return cell;
 }
 
 - (void)tableView:(UITableView *)_tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
 
     ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
-    //editProfileViewController.profile = doc;
 
-    [self performSegueWithIdentifier:@"EditItem" sender:doc];
+    [self performSegueWithIdentifier:@"EditProfile" sender:doc];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 
-    if ([segue.identifier isEqualToString:@"EditItem"]) {
-        
+    if ([segue.identifier isEqualToString:@"EditProfile"]) {
+    
         OTBEditProfilesViewController *controller = segue.destinationViewController;
         controller.profile = sender;
+    }
+    else if ([segue.identifier isEqualToString:@"AddProfile"]) {
         
-        //UINavigationController *navigationController = segue.destinationViewController;
-        //OTBEditProfilesViewController *controller = (OTBEditProfilesViewController *) navigationController.topViewController;
-        //editProfileViewController.profile = sender;
-        //[segue.destinationViewController editProfileViewController];
+        //[self showAlertWarning];
     }
 }
 
@@ -108,7 +136,7 @@
 - (void)tableView:(UITableView *)_tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        
+    
         ProfileDoc *doc = [profiles objectAtIndex:(NSUInteger)indexPath.row];
         [doc deleteDoc];
         [profiles removeObjectAtIndex:(NSUInteger)indexPath.row];
@@ -123,20 +151,20 @@
     //some code to make this profile the selected one
     ProfileDoc *selectedProfile = [profiles objectAtIndex:(NSUInteger)indexPath.row];
 
-    if (!selectedProfile.data.selected) {
-        
+    if (!selectedProfile.data.profileSelected) {
+
         for (NSUInteger i = 0; i < profiles.count; i++) {
-            
+    
             ProfileDoc *clear = [profiles objectAtIndex:i];
 
-            if (clear.data.selected) {
-                
-                clear.data.selected = NO;
+            if (clear.data.profileSelected) {
+            
+                clear.data.profileSelected = NO;
                 [clear saveData];
             }
         }
 
-        selectedProfile.data.selected = YES;
+        selectedProfile.data.profileSelected = YES;
     }
 
     [selectedProfile saveData];
@@ -154,35 +182,62 @@
     }];  
 }
 
-#pragma mark - Memory management
-
-- (void)didReceiveMemoryWarning {
+- (CGFloat)tableView:(UITableView *)_tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    //editProfileViewController = nil;
+    return IS_IPAD ? 88 : 66;
 }
 
-- (void)viewDidUnload {
+#pragma mark - nav bar buttons
+
+- (void)setupCloseButton {
     
-    navBar = nil;
-    tableView = nil;
-    // Relinquish ownership of anything that can be recreated in viewDidLoad or on demand.
-    // For example: self.myOutlet = nil;
+    closeButton = [[LineBarButtonItem alloc] initWithTarget:self andAction:@selector(closeButton) andStyle:LineBarButtonItemStyleClose];
+    closeButton.buttonColor = [UIColor colorWithRed:128/255.0 green:0/255.0 blue:128/255.0 alpha:1.0];
+    closeButton.buttonHighlightColor = [UIColor colorWithRed:64/255.0 green:64/255.0 blue:64/255.0 alpha:1.0];
+    [navItem setLeftBarButtonItem:closeButton animated:YES];
 }
 
-- (void)dealloc {
-
-    profiles = nil;
-    //editProfileViewController = nil;
-}
-
-- (IBAction)cancelButton:(id)sender {
+- (void)closeButton {
     
     [self.slidingViewController resetTopView];
 }
 
-- (IBAction)addButton:(id)sender {
+- (void)setupAddButton {
+    
+    addButton = [[LineBarButtonItem alloc] initWithTarget:self andAction:@selector(addProfile) andStyle:LineBarButtonItemStyleAdd];
+    addButton.buttonColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:160/255.0 alpha:1.0];
+    addButton.buttonHighlightColor = [UIColor colorWithRed:1 green:0.705 blue:0.114 alpha:1.0];
+    [navItem setRightBarButtonItem:addButton animated:YES];
+    //the following is for a page with a Navigation Controller
+    //[self.navigationItem setRightBarButtonItem:rightDrawerButton animated:YES];
 }
+
+- (IBAction)editProfile:(id)sender forEvent:(UIEvent *)event {
+    
+    NSSet *touches = [event allTouches];
+    UITouch *touch = [touches anyObject];
+    CGPoint currentTouchPosition = [touch locationInView:tableView];
+    NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:currentTouchPosition];
+    
+    if (indexPath != nil)
+        [self tableView:tableView accessoryButtonTappedForRowWithIndexPath:indexPath];
+}
+
+- (void)addProfile {
+    
+    //spinner.hidden = NO;
+    //[spinner startAnimating];
+    
+    //[self performSegueWithIdentifier:@"EditProfile" sender:nil];
+    
+    if (profiles.count > 1) {
+        
+        if ([appModel validatePurchase])
+            [self performSegueWithIdentifier:@"EditProfile" sender:nil];
+    }
+    else
+        [self performSegueWithIdentifier:@"EditProfile" sender:nil];
+}
+
 @end
 

@@ -45,10 +45,10 @@
     return self;
 }
 
-- (id)initWithTitle:(NSString *)title ProfileCode:(NSString *)profileCode ContactName:contactName ContactNumber:contactNumber ContactEmail:(NSString *)contactEmail Selected:(BOOL)selected {
+- (id)initWithProfileAlias:(NSString *)profileAlias ProfileCode:(NSString *)profileCode ProfileName:profileName ProfileNumber:profileNumber ProfileEmail:(NSString *)profileEmail ProfileSelected:(BOOL)profileSelected {
 
     if ((self = [super init]))
-        _data = [[ProfileData alloc] initWithTitle:title ProfileCode:profileCode ContactName:contactName ContactNumber:contactNumber ContactEmail:contactEmail Selected:selected];
+        _data = [[ProfileData alloc] initWithProfileAlias:profileAlias ProfileCode:profileCode ProfileName:profileName ProfileNumber:profileNumber ProfileEmail:profileEmail ProfileSelected:profileSelected];
 
     return self;
 }

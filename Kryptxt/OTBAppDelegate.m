@@ -7,6 +7,7 @@
 //
 
 #import "OTBAppDelegate.h"
+#import "OTBIAPHelper.h"
 
 @implementation OTBAppDelegate
 
@@ -16,8 +17,7 @@
     
     
     // Override point for customization after application launch.
-    UIImage *navBackgroundImage = [UIImage imageNamed:@"blank"];
-    [[UINavigationBar appearance] setBackgroundImage:navBackgroundImage forBarMetrics:UIBarMetricsDefault];
+    [[UINavigationBar appearance] setBackgroundImage:[UIImage imageNamed:@"blank"] forBarMetrics:UIBarMetricsDefault];
     
     [[UINavigationBar appearance] setTitleTextAttributes: [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8], UITextAttributeTextColor, [UIColor colorWithRed:245.0/255.0 green:245.0/255.0 blue:245.0/255.0 alpha:1.0], UITextAttributeTextShadowColor, [NSValue valueWithUIOffset:UIOffsetMake(0, 1)], UITextAttributeTextShadowOffset, [UIFont fontWithName:@"HelveticaNeue-CondensedBlack" size:24.0], UITextAttributeFont, nil]];
     
@@ -37,6 +37,8 @@
 //
 //    //now fade out splash image
 //    [UIView transitionWithView:self.window duration:6.0f options:UIViewAnimationOptionTransitionNone animations:^(void){imageView.alpha=0.0f;} completion:^(BOOL finished){[imageView removeFromSuperview];}];
+    
+    [OTBIAPHelper sharedInstance];
     
     // as usual
     [self.window makeKeyAndVisible];

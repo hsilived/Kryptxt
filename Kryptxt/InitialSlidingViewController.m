@@ -24,8 +24,8 @@
   self.topViewController = [storyboard instantiateViewControllerWithIdentifier:@"Main"];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
+
   return YES;
 }
 

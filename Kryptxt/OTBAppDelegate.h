@@ -8,12 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "OTBMainViewController.h"
-//#import "OTBProfilesViewController.h"
 
 @interface OTBAppDelegate : UIResponder <UIApplicationDelegate> {
     
     OTBMainViewController *main;
-    //OTBProfilesViewController *profiles;
     UIImageView *imageView;
 }
 

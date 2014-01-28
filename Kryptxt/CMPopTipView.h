@@ -101,6 +101,7 @@ typedef enum {
 
 
 @interface CMPopTipView : UIView {
+
     UIColor *backgroundColor;
     id <CMPopTipViewDelegate> delegate;
     NSString *message;
@@ -140,19 +141,13 @@ typedef enum {
 
 /* Contents can be either a message or a UIView */
 - (id)initWithMessage:(NSString *)messageToShow;
-
 - (id)initWithCustomView:(UIView *)aView;
 
 - (void)presentPointingAtView:(UIView *)targetView inView:(UIView *)containerView animated:(BOOL)animated;
-
 - (void)presentPointingAtBarButtonItem:(UIBarButtonItem *)barButtonItem animated:(BOOL)animated;
-
 - (void)dismissAnimated:(BOOL)animated;
-
 - (void)autoDismissAnimated:(BOOL)animated atTimeInterval:(NSTimeInterval)timeInvertal;
-
 - (PointDirection)getPointDirection;
-
 - (void)presentPointingAtTextField:(UITextField *)textView animated:(BOOL)animated;
 
 @end

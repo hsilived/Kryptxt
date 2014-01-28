@@ -13,9 +13,9 @@ typedef void(^t_PeoplePickerOnDone)(void);
 
 @interface PeoplePicker : ABPeoplePickerNavigationController <ABPeoplePickerNavigationControllerDelegate>
 
-@property(strong, nonatomic) NSString *contactName;
-@property(strong, nonatomic) NSString *contactNumber;
-@property(strong, nonatomic) NSString *contactEmail;
+@property(strong, nonatomic) NSString *profileName;
+@property(strong, nonatomic) NSString *profileNumber;
+@property(strong, nonatomic) NSString *profileEmail;
 @property(nonatomic, assign) UIViewController *viewController;
 @property(nonatomic, assign) SEL onDoneSelector;
 @property(nonatomic, strong) t_PeoplePickerOnDone onDoneBlock;

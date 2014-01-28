@@ -7,14 +7,14 @@
 
 @interface ProfileData : NSObject <NSCoding>
 
-@property(copy) NSString *title;
+@property(copy) NSString *profileAlias;
 @property(copy) NSString *profileCode;
-@property(copy) NSString *contactName;
-@property(copy) NSString *contactNumber;
-@property(copy) NSString *contactEmail;
-@property(assign) BOOL selected;
+@property(copy) NSString *profileName;
+@property(copy) NSString *profileNumber;
+@property(copy) NSString *profileEmail;
+@property(assign) BOOL profileSelected;
 
 - (void)toggleSelected;
 
-- (id)initWithTitle:(NSString *)_title ProfileCode:(NSString *)_profileCode ContactName:(NSString *)_contactName ContactNumber:(NSString *)_contactNumber ContactEmail:(NSString *)_contactEmail Selected:(BOOL)_selected;
+- (id)initWithProfileAlias:(NSString *)_profileAlias ProfileCode:(NSString *)_profileCode ProfileName:(NSString *)_profileName ProfileNumber:(NSString *)_profileNumber ProfileEmail:(NSString *)_profileEmail ProfileSelected:(BOOL)_profileSelected;
 @end

@@ -13,17 +13,23 @@
 #import  <QuartzCore/QuartzCore.h>
 #import "ValidationMethods.h"
 #import "GeneralHelpers.h"
-#import "OTBModalPopup.h"
 #import "ECSlidingViewController.h"
+#import "LineBarButtonItem.h"
+#import "SlideUpMenu.h"
+#import "AppModel.h"
+#import "ModalPopup.h"
+#import "Arrow.h"
 
-@interface OTBMainViewController : UIViewController <OTBModalPopupDelegate, MFMailComposeViewControllerDelegate, UIPopoverControllerDelegate, UIActionSheetDelegate, MFMessageComposeViewControllerDelegate> {
+@interface OTBMainViewController : UIViewController <ModalPopupDelegate, SlideUpMenuDelegate> {
     
     GeneralHelpers* generalHelpers;
     ValidationMethods *validationMethods;
     OTBEditProfilesViewController *editProfileViewController;
+    AppModel *appModel;
+    ModalPopup *infoPopup;
     
-    IBOutlet UIImageView *downArrow;
-    IBOutlet UIImageView *upArrow;
+    IBOutlet Arrow *downArrow;
+    IBOutlet Arrow *upArrow;
     IBOutlet UILabel *tempCode;
     IBOutlet UILabel *currentProfile;
     IBOutlet UITextView *inputView;
@@ -47,48 +53,54 @@
     NSMutableArray *letterBlock5;
     NSMutableArray *masterCode;
     NSMutableArray *alphabet;
+    
+    SlideUpMenu *menu;
 }
 
-@property(retain) ProfileDoc *profileDoc;
+@property(retain) ProfileDoc *profile;
 @property(retain) NSMutableArray *profiles;
+@property (strong, nonatomic) LineBarButtonItem *rightDrawerButton;
+
+#pragma mark - System Methods
+
+- (void)viewDidLoad;
+- (void)viewWillAppear:(BOOL)animated;
+- (void)viewDidAppear:(BOOL)animated;
+- (void)viewWillDisappear:(BOOL)animated;
+- (void)viewDidDisappear:(BOOL)animated;
+- (void)didReceiveMemoryWarning;
+- (void)viewDidUnload;
+
+#pragma mark - profile Methods
 
 - (void)loadProfileInfo;
-
 - (void)setupProfileCode;
-
 - (NSString *)compileAlphaCodeWithArray:(NSMutableArray *)array;
-
 - (NSMutableArray *)rearrangeArray:(NSMutableArray *)array WithShift:(NSInteger)shift WithDirection:(NSInteger)direction;
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
+#pragma mark - ActionSheet Methods
 
 - (void)sendText;
-
-- (void)sendSMSer:(NSArray *)toRecipient messageBody:(NSString *)messageBody;
-
-- (void)messageComposeViewControllerDidCancel:(MFMessageComposeViewController *)messageController;
-
-- (void)messageComposeViewController:(MFMessageComposeViewController *)messageController didFinishWithResult:(MessageComposeResult)result;
-
 - (void)CopyToClipboard;
-
 - (void)PasteFromClipboard;
 
+#pragma mark - top Keyboard bar setup & events
+
 - (void)setupKeyboardToolbar;
-
 - (void)cancelKeyboard;
-
 - (void)doneKeyboard;
 
+#pragma mark - text conversion
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text;
-
 - (void)encryptLetter:(NSString *)letter;
-
 - (void)decryptText;
 
-- (IBAction)showActionSheet:(id)sender;
+# pragma mark - slide out methods
 
-- (IBAction)infoOpen:(id)sender;
-- (IBAction)revealUnderRight:(id)sender;
+- (void)revealUnderRight;
+- (void)setupRightMenuButton;
+
+- (IBAction)openSlideUpMenu:(id)sender;
 
 @end

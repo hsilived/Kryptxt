@@ -14,7 +14,8 @@
 #import <Foundation/Foundation.h>
 #import "DLog.h"
 #import "ProfileDoc.h"
-#import "profileData.h"
-#import "profileDatabase.h"
+#import "ProfileData.h"
+#import "ProfileDatabase.h"
+#import <Social/Social.h>
 
 #endif

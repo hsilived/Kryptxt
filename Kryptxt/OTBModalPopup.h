@@ -28,9 +28,11 @@
 @interface OTBModalPopup : UIView <UIScrollViewDelegate> {
     
     CloseButton *closeButton;
-    float pageHeight;
+    float PageHeight;
     UIPageControl *pageControl;
     OTBCustomScrollView *pageScroll;
+    UIView *infoView;
+    int Height;
 }
 
 @property(nonatomic, assign) id <OTBModalPopupDelegate> delegate;
@@ -43,6 +45,8 @@
 - (void)presentInView:(UIView *)parentView;
 
 - (void)dismiss;
+
+- (void)changeTheViewToPortrait:(BOOL)portrait andDuration:(NSTimeInterval)duration;
 
 @end
 

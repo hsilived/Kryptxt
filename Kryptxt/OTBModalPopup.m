@@ -20,23 +20,23 @@
 //  SOFTWARE.
 
 #import "OTBModalPopup.h"
-#import "OTBNavigationTitle.h"
+//#import "OTBNavigationTitle.h"
 
-#define HeaderSize 60
+#define IS_IPAD UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad
+
+
+#define HeaderHeight 60
+#define HeaderWidth 288
 #define FooterSize 30
-#define pageWidth 280
-//#define pageHeight 336
+#define PageWidth 280
+#define ContainerWidth 294
+#define PagesControlWidth 200   
+#define PagesControlHeight 20
 
 
-@interface OGAlertSheetBackground : UIView
-@property(nonatomic, retain) UIColor *fillColor;
-@end
 
-
-@interface OTBModalPopup () {
     
-    OGAlertSheetBackground *background;
-}
+@interface OTBModalPopup ()
 
 - (void)finishCloseAnimation;
 
@@ -55,8 +55,12 @@
 - (id)init {
     
     //find height of screen to setup where the popup ends
-    int height = [UIScreen mainScreen].bounds.size.height;
     int statusBarHeight = 0;
+    int screenWidth = [UIScreen mainScreen].bounds.size.width;
+    int screenHeight = [UIScreen mainScreen].bounds.size.height;
+    
+    Height = (screenHeight > 535) ? 535 : screenHeight;    
+    PageHeight = Height - (176 - HeaderHeight + FooterSize) - 1;
     
     if (![UIApplication sharedApplication].isStatusBarHidden) {
         
@@ -64,29 +68,30 @@
         statusBarHeight = rect.size.height;
     }
     
-    self = [super initWithFrame:CGRectMake(0, 0, 300, height)];
+    //self is the whole screen
+    self = [super initWithFrame:CGRectMake(0, 0, ContainerWidth, Height)];
+    self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
     
     if (self) {
         
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        //self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         self.opaque = NO;
         
-        //iphone 4 height == 480
-        //create the container to hold the popup
-        UIView *chooserView = [[UIView alloc] initWithFrame:CGRectMake(0, 25 / 2 + statusBarHeight, 300, height - 25)];
-        chooserView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin |
-        UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
+        //iphone 4 height == 480 - popup 447.5
+        //iphone 5 height == 568 - popup 535.5
+        //creat the container to hold the popup
+        infoView = [[UIView alloc] initWithFrame:CGRectMake((screenWidth - ContainerWidth) / 2 - 3, (screenHeight - Height  + statusBarHeight) / 2 + statusBarHeight, ContainerWidth, Height - 45)];
+        //infoView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
         
-        
-        background = [[OGAlertSheetBackground alloc] initWithFrame:CGRectMake(-1, 10, 302, height - 45)];
-        background.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        background.backgroundColor = [UIColor clearColor];
-        [chooserView addSubview:background];
-        
-        pageHeight = height - (176 - HeaderSize + FooterSize) - 1;
+        UIView *backgroundView = [[UIView alloc] initWithFrame:CGRectMake(5, HeaderHeight + 10, ContainerWidth - 4, PageHeight + 2)];
+        backgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        backgroundView.backgroundColor = [UIColor whiteColor];
+        backgroundView.layer.borderWidth = 1;
+        backgroundView.layer.borderColor = [UIColor blackColor].CGColor;
+        [infoView addSubview:backgroundView];
         
         // Header
-        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(6, 10, 288, HeaderSize)];
+        UIView *header = [[UIView alloc] initWithFrame:CGRectMake(6, 10, HeaderWidth, HeaderHeight)];
         
         UIBezierPath *shapePath = [UIBezierPath bezierPathWithRoundedRect:header.bounds byRoundingCorners:UIRectCornerTopLeft | UIRectCornerTopRight cornerRadii:CGSizeMake(15.0, 15.0)];
         
@@ -113,15 +118,15 @@
         [gradient setNeedsDisplay];
         
         [header.layer addSublayer:shapeLayer];
-        [chooserView addSubview:header];
+        [infoView addSubview:header];
         
         //Header Image
-        OTBNavigationTitle *imageView = [[OTBNavigationTitle alloc] initWithFrame:CGRectMake(0, 0, 129, 41)];
-        imageView.center = CGPointMake((header.frame.size.width / 2 + 10), (header.frame.size.height / 2 + 10 + 1));
-        [chooserView addSubview:imageView];
+       // OTBNavigationTitle *imageView = [[OTBNavigationTitle alloc] initWithFrame:CGRectMake(0, 0, 129, 41)];
+        //imageView.center = CGPointMake((header.frame.size.width / 2 + 10), (header.frame.size.height / 2 + 10 + 1));
+        //[infoView addSubview:imageView];
         
         // footer
-        UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(6, height - 45 - FooterSize, 288, FooterSize)];
+        UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(6, Height - 45 - FooterSize, HeaderWidth, FooterSize)];
         
         shapePath = [UIBezierPath bezierPathWithRoundedRect:footer.bounds byRoundingCorners:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii:CGSizeMake(15.0, 15.0)];
         
@@ -148,49 +153,46 @@
         [gradient setNeedsDisplay];
         
         [footer.layer addSublayer:shapeLayer];
-        [chooserView addSubview:footer];
+        [infoView addSubview:footer];
         
         
-        shapePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(44, 5, 200, 20) byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(15.0, 15.0)];
-        
-        
+        //this is the black circle around the pages dots in the footer
+        shapePath = [UIBezierPath bezierPathWithRoundedRect:CGRectMake((HeaderWidth - PagesControlWidth) / 2, 5, PagesControlWidth, PagesControlHeight) byRoundingCorners:UIRectCornerAllCorners cornerRadii:CGSizeMake(15.0, 15.0)];
         shapeLayer = [CAShapeLayer layer];
         shapeLayer.frame = footer.bounds;
         shapeLayer.path = shapePath.CGPath;
         shapeLayer.strokeColor = [UIColor blackColor].CGColor;
         shapeLayer.lineWidth = 1;
-        
         [footer.layer addSublayer:shapeLayer];
         
         
         
         // Scroll View
         //int scrollHeight = self.background.bounds.size.height - FooterSize - (HeaderSize + 10 + 2);
-        pageScroll = [[OTBCustomScrollView alloc] initWithFrame:CGRectMake(10, HeaderSize + 10 + 1, 280, pageHeight)];
+        pageScroll = [[OTBCustomScrollView alloc] initWithFrame:CGRectMake(10, HeaderHeight + 10 + 1, PageWidth, PageHeight)];
         pageScroll.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         pageScroll.backgroundColor = [UIColor clearColor];
         pageScroll.pagingEnabled = YES;
         pageScroll.showsHorizontalScrollIndicator = NO;
         pageScroll.delegate = self;
         //pageScroll.backgroundColor = [UIColor greenColor];
-        [chooserView addSubview:pageScroll];
+        [infoView addSubview:pageScroll];
         
         // Page Control
-        pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(20, height - 45 - FooterSize - 3, 260, 36)];
+        pageControl = [[UIPageControl alloc] initWithFrame:CGRectMake(6, Height - 45 - FooterSize, HeaderWidth, FooterSize)];
         pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
         [pageControl addTarget:self action:@selector(pageControlChanged:) forControlEvents:UIControlEventValueChanged];
         pageControl.hidesForSinglePage = YES;
-        [chooserView addSubview:pageControl];
+        [infoView addSubview:pageControl];
         
         // Close Button
         closeButton = [[CloseButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
         [closeButton addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
-        [chooserView addSubview:closeButton];
+        [infoView addSubview:closeButton];
         
-        [self addSubview:chooserView];
+        [self addSubview:infoView];
         
         self.shouldDrawShadow = YES;
-        //self.dismissAfterwards = NO;
     }
     
     return self;
@@ -240,19 +242,64 @@
     [self removeFromSuperview];
 }
 
+- (CGSize)currentSize {
 
+    CGSize size = [UIScreen mainScreen].bounds.size;
+    UIApplication *application = [UIApplication sharedApplication];
+
+    if (UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation))
+        size = CGSizeMake(size.height, size.width);
+
+    if (application.statusBarHidden == NO)
+        size.height -= MIN(application.statusBarFrame.size.width, application.statusBarFrame.size.height);
+    
+    return size;
+}
+
+//- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+//    
+//	//if(UIInterfaceOrientationIsLandscape(interfaceOrientation))
+//    return YES;
+//	
+//	//return NO;
+//}
+
+- (void)changeTheViewToPortrait:(BOOL)portrait andDuration:(NSTimeInterval)duration {
+    
+    //int height = [UIScreen mainScreen].bounds.size.height;
+    //int width = [UIScreen mainScreen].bounds.size.width;
+    
+    CGRect screenBounds = [UIScreen mainScreen].bounds;
+    int width = CGRectGetWidth(screenBounds);
+    int height = CGRectGetHeight(screenBounds);
+    
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:duration];
+    
+    NSLog(@"width %d", width);
+    NSLog(@"height %d", height);
+    
+    self.frame = CGRectMake(0, 0, width, height);
+    
+    if (portrait) {
+        
+        infoView.frame = CGRectMake((width - ContainerWidth) / 2 - 3, (height - Height + 20) / 2 + 20, ContainerWidth, Height - 45);
+        NSLog(@"portrait");
+}
+    else {
+        
+        infoView.frame = CGRectMake((height - ContainerWidth) / 2 - 3, (width - Height + 20) / 2 + 20, ContainerWidth, Height - 45);
+        NSLog(@"landscape");
+    }
+    
+    
+    
+    
+    //self.frame = parentView.bounds;
+    NSLog(@"self.frame (%f, %f) (%f x %f)", self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+}
 
 #pragma mark - Getter / Setter
-
-- (UIColor *)backgroundColor {
-    
-    return background.fillColor;
-}
-
-- (void)setBackgroundColor:(UIColor *)bg {
-    
-    background.fillColor = bg;
-}
 
 - (void)setShouldDrawShadow:(BOOL)value {
     
@@ -273,7 +320,7 @@
         
         int numberOfPages = pages.count;
         
-        [pageScroll setContentSize:CGSizeMake(pageScroll.frame.size.width * numberOfPages, pageHeight)];
+        [pageScroll setContentSize:CGSizeMake(pageScroll.frame.size.width * numberOfPages, PageHeight)];
         pageControl.numberOfPages = numberOfPages;
 
         NSUInteger i = 0;
@@ -281,7 +328,7 @@
         while (i < numberOfPages) {
             
             UIView *page = [pages objectAtIndex:i];
-            page.frame = CGRectMake(pageWidth * i, 0, pageWidth, pageHeight);
+            page.frame = CGRectMake(PageWidth * i, 0, PageWidth, PageHeight);
             [pageScroll addSubview:page];
             
             i++;
@@ -330,76 +377,6 @@
     CGContextDrawRadialGradient(c, radGradient, CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)), MAX(CGRectGetWidth(rect), CGRectGetHeight(rect)), CGPointMake(CGRectGetMidX(rect), CGRectGetMidY(rect)), 0, 0);
     
     CGGradientRelease(radGradient);
-}
-
-@end
-
-
-
-#pragma mark - Alert Sheet Background
-
-@implementation OGAlertSheetBackground
-
-#define OGEdgeRadius 16.0f
-#define OGEdgePadding 6.0f
-#define OGEdgeBottomPad 9.0f
-#define OGLineWidth 1.0f
-
-@synthesize fillColor = _fillColor;
-
-- (id)initWithFrame:(CGRect)frame {
-    
-    self = [super initWithFrame:frame];
-    
-    if (self)
-        self.fillColor = [UIColor colorWithRed:255 / 255.0 green:255 / 255.0 blue:255 / 255.0 alpha:1.0];
-    
-    return self;
-}
-
-- (void)setFillColor:(UIColor *)fillColor {
-    
-    if (fillColor != _fillColor) {
-        
-        _fillColor = fillColor;
-        [self setNeedsDisplay];
-    }
-}
-
-- (void)drawRect:(CGRect)rect {
-    
-    float width = rect.size.width;
-    float height = rect.size.height;
-    float padEdge = OGEdgeRadius + (OGLineWidth / 2);
-    CGPoint p1 = CGPointMake(OGEdgePadding + padEdge, padEdge);// p1 p2
-    CGPoint p2 = CGPointMake(width - OGEdgePadding - padEdge, padEdge);// p4 p3
-    CGPoint p3 = CGPointMake(width - OGEdgePadding - padEdge, height - OGEdgeBottomPad - padEdge);
-    CGPoint p4 = CGPointMake(OGEdgePadding + padEdge, height - OGEdgeBottomPad - padEdge);
-    
-    
-    CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, NULL, p1.x, p1.y - OGEdgeRadius);
-    CGPathAddArcToPoint(path, NULL, p2.x + OGEdgeRadius, p2.y - OGEdgeRadius, p2.x + OGEdgeRadius, p2.y, OGEdgeRadius);
-    CGPathAddArcToPoint(path, NULL, p3.x + OGEdgeRadius, p3.y + OGEdgeRadius, p3.x, p3.y + OGEdgeRadius, OGEdgeRadius);
-    CGPathAddArcToPoint(path, NULL, p4.x - OGEdgeRadius, p4.y + OGEdgeRadius, p4.x - OGEdgeRadius, p4.y, OGEdgeRadius);
-    CGPathAddArcToPoint(path, NULL, p1.x - OGEdgeRadius, p1.y - OGEdgeRadius, p1.x, p1.y - OGEdgeRadius, OGEdgeRadius);
-    
-    CGContextRef c = UIGraphicsGetCurrentContext();
-    
-    CGContextSaveGState(c);
-    CGContextSetShadowWithColor(c, CGSizeMake(0, 5), 5.0, [[[UIColor blackColor] colorWithAlphaComponent:0.6] CGColor]);
-    
-    CGContextSetLineWidth(c, OGLineWidth);
-    CGContextSetStrokeColorWithColor(c, [[UIColor blackColor] CGColor]);
-    CGContextSetFillColorWithColor(c, [_fillColor CGColor]);
-    
-    CGContextBeginTransparencyLayer(c, NULL);
-    CGContextAddPath(c, path);
-    CGContextDrawPath(c, kCGPathFillStroke);
-    CGContextEndTransparencyLayer(c);
-    CGContextRestoreGState(c);
-    
-    CGPathRelease(path);
 }
 
 @end
